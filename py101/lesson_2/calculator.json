@@ -1,0 +1,30 @@
+{
+    "en":
+    {
+        "welcome": "Welcome to Calculator!",
+        "get_first_num": "What is the first number?",
+        "get_second_num": "What is the second number?",
+        "invalid_num": "Hmm ... that doesn't look right. Please enter a valid number.",
+        "get_operator": "Enter '+' to add, '-' to subtract, '*' to multiply, or '/' to divide.",
+        "invalid_operator": "Please choose a valid operator: '+', '-', '*', or '/'!",
+        "zero_div": "Cannot divide by zero!",
+        "result": "", 
+        "another_calc": "Would you like to do another calculation? (y)/(n)",
+        "goodbye": "Goodbye!"
+    },
+    "es":
+    {
+        "welcome": "¡Bienvenido a la Calculadora!",
+        "get_first_num": "¿Cuál es el primer número?",
+        "get_second_num": "¿Cuál es el segundo número?",
+        "invalid_num": "Hmm... eso no se ve bien. Por favor ingresa un número válido.",
+        "get_operator": "Ingrese '+' para sumar, '-' para restar, '*' para multiplicar o '/' para dividir.",
+        "invalid_operator": "Elija un operador válido: '+', '-', '*' o '/'!",
+        "zero_div": "¡No se puede dividir por cero!",
+        "result": "",
+        "another_calc":"¿Le gustaría hacer otro cálculo? (y)/(n)",
+        "goodbye": "¡Adiós!"
+
+    }
+    
+}
