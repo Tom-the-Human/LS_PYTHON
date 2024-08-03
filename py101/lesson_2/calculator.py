@@ -13,14 +13,20 @@ Found a code to disable the invalid-name flag.
 
 import json
 
-with open('calculator.json', 'r') as file:
+with open('calculator.json', 'r', encoding='utf-8') as file:
     OUTPUT = json.load(file)
 
-def messages(message, lang='es'):
+LANGUAGE = 'es'
+#           ^^ change this value to select language
+
+def messages(message, lang):
     """
     Accesses and returns output message data.
     """
-    return OUTPUT[lang][message]
+    if message not in OUTPUT[lang]:         # pylint: disable=R1705
+        return message      # formatted result must call messages directly
+    else:
+        return OUTPUT[lang][message]
 
 def prompt(output_key):
     """
@@ -40,10 +46,10 @@ def invalid_num(number_str):
 
     return False
 
-LANGUAGE = 'es'
+prompt('welcome')
 
 while True:
-    prompt('welcome')
+
     prompt('get_first_num')
     num1 = input()
 
@@ -71,28 +77,25 @@ while True:
 
     match operator:
         case '+':
-            result = num1 + num2
+            outcome = num1 + num2
         case '-':
-            result = num1 - num2
+            outcome = num1 - num2
         case '*':
-            result = num1 * num2
+            outcome = num1 * num2
         case '/':
             if num2 == 0.0:
                 try:
-                    result = num1 / num2
+                    outcome = num1 / num2
                 except ZeroDivisionError:
-                    result = None #pylint: disable=C0103
+                    outcome = None               # pylint: disable=C0103
                     prompt('zero_div')
             else:
-                result = num1 / num2
+                outcome = num1 / num2
 
-#can't get fstring to work without assigning at runtime FIX THIS
-    OUTPUT['en']['result'] = f'Result: {result}' 
-    OUTPUT['es']['result'] = f'El resultado: {result}'
-    prompt('result') 
+    prompt(messages('result', LANGUAGE).format(outcome=outcome))
 
     prompt('another_calc')
     restart = input()
-    if restart and restart[0].lower() != 'y':
+    if restart and restart[0].lower() not in ('y', 's'):
         prompt('goodbye')
         break

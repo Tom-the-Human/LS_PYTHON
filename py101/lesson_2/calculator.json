@@ -8,7 +8,7 @@
         "get_operator": "Enter '+' to add, '-' to subtract, '*' to multiply, or '/' to divide.",
         "invalid_operator": "Please choose a valid operator: '+', '-', '*', or '/'!",
         "zero_div": "Cannot divide by zero!",
-        "result": "", 
+        "result": "Result: {outcome}", 
         "another_calc": "Would you like to do another calculation? (y)/(n)",
         "goodbye": "Goodbye!"
     },
@@ -21,8 +21,8 @@
         "get_operator": "Ingrese '+' para sumar, '-' para restar, '*' para multiplicar o '/' para dividir.",
         "invalid_operator": "Elija un operador válido: '+', '-', '*' o '/'!",
         "zero_div": "¡No se puede dividir por cero!",
-        "result": "",
-        "another_calc":"¿Le gustaría hacer otro cálculo? (y)/(n)",
+        "result": "El resultado: {outcome}",
+        "another_calc":"¿Le gustaría hacer otro cálculo? (s)/(n)",
         "goodbye": "¡Adiós!"
 
     }
