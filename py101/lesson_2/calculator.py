@@ -11,12 +11,14 @@ Why does Pylint think the variable 'result' is meant to be a constant?
 Found a code to disable the invalid-name flag.
 """
 
+import os
 import json
+
 
 with open('calculator.json', 'r', encoding='utf-8') as file:
     OUTPUT = json.load(file)
 
-LANGUAGE = 'es'
+LANGUAGE = 'en'
 #           ^^ change this value to select language
 
 def messages(message, lang):
@@ -39,6 +41,8 @@ def invalid_num(number_str):
     """
     Checks if number is valid.
     """
+    if number_str in ('nan', 'infinity'):
+        return True
     try:
         float(number_str)
     except ValueError:
@@ -46,9 +50,30 @@ def invalid_num(number_str):
 
     return False
 
+def run_calculation(num1, num2, operator):
+    match operator:
+        case '+':
+            outcome = num1 + num2
+        case '-':
+            outcome = num1 - num2
+        case '*':
+            outcome = num1 * num2
+        case '/':
+            if num2 == False:
+                try:
+                    outcome = num1 / num2
+                except ZeroDivisionError:
+                    outcome = 'nan (some say ∞)'               # pylint: disable=C0103
+                    prompt('zero_div')
+            else:
+                outcome = num1 / num2
+    return outcome
+
 prompt('welcome')
 
 while True:
+
+    os.system('clear')
 
     prompt('get_first_num')
     num1 = input()
@@ -75,22 +100,7 @@ while True:
         prompt('invalid_operator')
         operator = input()
 
-    match operator:
-        case '+':
-            outcome = num1 + num2
-        case '-':
-            outcome = num1 - num2
-        case '*':
-            outcome = num1 * num2
-        case '/':
-            if num2 == 0.0:
-                try:
-                    outcome = num1 / num2
-                except ZeroDivisionError:
-                    outcome = None               # pylint: disable=C0103
-                    prompt('zero_div')
-            else:
-                outcome = num1 / num2
+    outcome = run_calculation(num1, num2, operator)
 
     prompt(messages('result', LANGUAGE).format(outcome=outcome))
 

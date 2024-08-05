@@ -7,7 +7,7 @@
         "invalid_num": "Hmm ... that doesn't look right. Please enter a valid number.",
         "get_operator": "Enter '+' to add, '-' to subtract, '*' to multiply, or '/' to divide.",
         "invalid_operator": "Please choose a valid operator: '+', '-', '*', or '/'!",
-        "zero_div": "Cannot divide by zero! https://www.1dividedby0.com/",
+        "zero_div": "Well, the thing about that is ... https://www.1dividedby0.com/",
         "result": "Result: {outcome}", 
         "another_calc": "Would you like to do another calculation? (y)/(n)",
         "goodbye": "Goodbye!"
@@ -20,7 +20,7 @@
         "invalid_num": "Hmm... eso no se ve bien. Por favor ingresa un número válido.",
         "get_operator": "Ingrese '+' para sumar, '-' para restar, '*' para multiplicar o '/' para dividir.",
         "invalid_operator": "Elija un operador válido: '+', '-', '*' o '/'!",
-        "zero_div": "¡No se puede dividir por cero! https://www.1dividedby0.com/",
+        "zero_div": "Bueno, lo que pasa con eso es ... https://www.1dividedby0.com/",
         "result": "El resultado: {outcome}",
         "another_calc":"¿Le gustaría hacer otro cálculo? (s)/(n)",
         "goodbye": "¡Adiós!"
