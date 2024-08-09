@@ -41,7 +41,7 @@ def invalid_num(number_str):
     """
     Checks if number is valid.
     """
-    if number_str in ('nan', 'infinity'):
+    if number_str in ('nan', 'infinity','inf'):
         return True
     try:
         float(number_str)
@@ -50,24 +50,27 @@ def invalid_num(number_str):
 
     return False
 
-def run_calculation(num1, num2, operator):
-    match operator:
+def do_calculation(num_1, num_2, oper):
+    """
+    Performs calculation on inputs.
+    """
+    match oper:
         case '+':
-            outcome = num1 + num2
+            outcome1 = num_1 + num_2
         case '-':
-            outcome = num1 - num2
+            outcome1 = num_1 - num_2
         case '*':
-            outcome = num1 * num2
+            outcome1 = num_1 * num_2
         case '/':
-            if num2 == False:
+            if not num_2:
                 try:
-                    outcome = num1 / num2
+                    outcome1 = num_1 / num_2
                 except ZeroDivisionError:
-                    outcome = 'nan (some say ∞)'               # pylint: disable=C0103
+                    outcome1 = 'nan (some say ∞)'               # pylint: disable=C0103
                     prompt('zero_div')
             else:
-                outcome = num1 / num2
-    return outcome
+                outcome1 = num_1 / num_2
+    return outcome1
 
 prompt('welcome')
 
@@ -100,7 +103,7 @@ while True:
         prompt('invalid_operator')
         operator = input()
 
-    outcome = run_calculation(num1, num2, operator)
+    outcome = do_calculation(num1, num2, operator)
 
     prompt(messages('result', LANGUAGE).format(outcome=outcome))
 

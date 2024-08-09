@@ -1,0 +1,43 @@
+{
+    "en_US.UTF-8": {
+        "welcome": "Welcome to Mortage Calculator! Works for car loans, too!",
+        "get_loan_amount": "What is the total loan value? Must be a positive value represented in digits.",
+        "currency_symbol": "$",
+        "get_APR": "What is the annual percentage rate (APR)?",
+        "get_term": "What is the loan repayment period in months (years x 12)?",
+        "invalid_num": "That doesn't look right. Please enter only postive values in digits.",
+        "invalid_term": "The loan term must be at least 1 month. Please enter an integer of 1 or greater.",
+        "result": "Your monthly payment is ${monthly_payment}.",
+        "again?": "Would you like to calculate another loan payment? (y)/(n)",
+        "goodbye": "Goodbye"
+
+    },
+
+    "en_GB.UTF-8": {
+        "welcome": "Welcome to Mortage Calculator! Works for car loans, too!",
+        "get_loan_amount": "What is the total loan value? Must be a positive value represented in digits.",
+        "currency_symbol": "£",
+        "get_APR": "What is the annual percentage rate (APR)?",
+        "get_term": "What is the loan repayment period in months (years x 12)?",
+        "invalid_num": "That doesn't look right. Please enter only postive values in digits.",
+        "invalid_term": "The loan term must be at least 1 month. Please enter an integer of 1 or greater.",
+        "result": "Your monthly payment is £{monthly_payment}.",
+        "again?": "Would you like to calculate another loan payment? (y)/(n)",
+        "goodbye": "Goodbye"
+
+    },
+
+    "en_AU.UTF-8": {
+        "welcome": "Welcome to Mortage Calculator! Works for car loans, too!",
+        "get_loan_amount": "What is the total loan value? Must be a positive value represented in digits.",
+        "currency_symbol": "$",
+        "get_APR": "What is the annual percentage rate (APR)?",
+        "get_term": "What is the loan repayment period in months (years x 12)?",
+        "invalid_num": "That doesn't look right. Please enter only postive values in digits.",
+        "invalid_term": "The loan term must be at least 1 month. Please enter an integer of 1 or greater.",
+        "result": "Your monthly payment is ${monthly_payment}.",
+        "again?": "Would you like to calculate another loan payment? (y)/(n)",
+        "goodbye": "Goodbye"
+
+    }
+}
