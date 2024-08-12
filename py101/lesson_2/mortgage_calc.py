@@ -9,8 +9,8 @@ import os
 with open('mortgage_messages.json', 'r', encoding='utf-8') as file:
     OUTPUT = json.load(file)
 
-LOCALE = locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
-CURRENCY_SYMBOL = locale.localeconv()['currency_symbol']
+LOCALE = locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')     # < Set US or GB here
+CURRENCY = locale.localeconv()['currency_symbol']
 
 def messages(message, locale):                  # pylint: disable=w0621
     """
@@ -18,8 +18,8 @@ def messages(message, locale):                  # pylint: disable=w0621
     """
     if message not in OUTPUT[locale]:           # pylint: disable=R1705
         return message      # formatted result must call messages directly
-    else:
-        return OUTPUT[locale][message]
+
+    return OUTPUT[locale][message]
 
 def prompt(output_key):
     """
@@ -28,7 +28,7 @@ def prompt(output_key):
     message = messages(output_key, LOCALE)
     print(f"=> {message} <=")
 
-def is_valid_amount(number_str):
+def is_amount_valid(number_str):
     """
     Checks if amount is valid.
     """
@@ -45,7 +45,7 @@ def is_valid_amount(number_str):
 
     return True
 
-def is_valid_apr(number_str):
+def is_apr_valid(number_str):
     """
     Checks if APR is valid.
     """
@@ -62,7 +62,7 @@ def is_valid_apr(number_str):
 
     return True
 
-def is_valid_term(number_str):
+def is_term_valid(number_str):
     """
     Checks if term length is valid.
     """
@@ -92,11 +92,10 @@ def print_results():
     """
     Prints results to terminal.
     """
-    prompt(f'Loan amount: {CURRENCY_SYMBOL}{loan_value:.2f}')
-    prompt(f'APR: {apr}%')
-    prompt(f'Loan term: {term_months} months')
-    prompt(messages('result', LOCALE).format(monthly_payment=monthly_payment))
-
+    prompt(messages('print_amount', LOCALE).format(CURRENCY=CURRENCY, loan_value=loan_value))
+    prompt(messages('print_apr', LOCALE).format(apr=apr))
+    prompt(messages('print_term', LOCALE).format(term_months=term_months))
+    prompt(messages('print_result', LOCALE).format(CURRENCY=CURRENCY, monthly_pay=m_p))
 
 while True:
 
@@ -104,12 +103,12 @@ while True:
 
     prompt('welcome')
     prompt('get_loan_amount')
-    loan_value = input(CURRENCY_SYMBOL)
+    loan_value = input(CURRENCY)
     loan_value = loan_value.replace('$', '').replace('£', '').replace(',', '')
 
-    while is_valid_amount(loan_value) is False:
+    while is_amount_valid(loan_value) is False:
         prompt('invalid_num')
-        loan_value = input(CURRENCY_SYMBOL)
+        loan_value = input(CURRENCY)
         loan_value = loan_value.replace('$', '').replace('£', '').replace(',', '')
 
 
@@ -118,7 +117,7 @@ while True:
     prompt('get_APR')
     apr = input().replace('%', '').replace(',', '')
 
-    while is_valid_apr(apr) is False:
+    while is_apr_valid(apr) is False:
         prompt('invalid_num')
         apr = input()
 
@@ -128,14 +127,14 @@ while True:
     prompt('get_term')
     term_months = input()
 
-    while is_valid_term(term_months) is False:
+    while is_term_valid(term_months) is False:
         prompt('invalid_term')
         term_months = input()
 
     term_months = int(term_months)
 
     monthly_payment = round(calc_monthly_payment(loan_value, monthly_interest, term_months), 2)
-
+    m_p = monthly_payment   # to shorten print line
     print_results()
 
     prompt('again?')

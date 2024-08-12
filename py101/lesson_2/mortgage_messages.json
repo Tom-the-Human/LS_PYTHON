@@ -6,7 +6,10 @@
         "get_term": "What is the loan repayment period in *months* (years x 12)?",
         "invalid_num": "That doesn't look right. Please enter only postive values in digits.",
         "invalid_term": "The loan term must be at least 1 month. Please enter an integer of 1 or greater.",
-        "result": "Your monthly payment is ${monthly_payment}.",
+        "print_amount": "Loan amount: {CURRENCY}{loan_value:.2f}",
+        "print_apr": "APR: {apr}%",
+        "print_term": "Loan term: {term_months} months",
+        "print_result": "Your monthly payment is {CURRENCY}{monthly_pay:.2f}.",
         "again?": "Would you like to calculate another loan payment? (y)/(n)",
         "goodbye": "Goodbye"
 
@@ -19,7 +22,10 @@
         "get_term": "What is the loan repayment period in *months* (years x 12)?",
         "invalid_num": "That doesn't look right. Please enter only postive values in digits.",
         "invalid_term": "The loan term must be at least 1 month. Please enter an integer of 1 or greater.",
-        "result": "Your monthly payment is £{monthly_payment}.",
+        "print_amount": "Loan amount: {CURRENCY}{loan_value:.2f}",
+        "print_apr": "APR: {apr}%",
+        "print_term": "Loan term: {term_months} months",
+        "print_result": "Your monthly payment is {CURRENCY}{monthly_pay:.2f}.",
         "again?": "Would you like to calculate another loan payment? (y)/(n)",
         "goodbye": "Goodbye"
 
