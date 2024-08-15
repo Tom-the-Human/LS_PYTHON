@@ -1,6 +1,8 @@
 """
 Simple loan calculator. Reusing parts of my first calculator program with
-significant modification. 
+significant modification. Uses locale codes to automatically support
+different currency symbols as well as languages whose translations are added
+to the json OUTPUT dictionary.
 """
 
 import json
@@ -11,7 +13,7 @@ import os
 with open('mortgage_messages.json', 'r', encoding='utf-8') as file:
     OUTPUT = json.load(file)
 
-LOCALE = locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')     # < Set US or GB here
+LOCALE = locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')     # < Set en_US, en_GB, or es_ES
 CURRENCY = locale.localeconv()['currency_symbol']
 
 def messages(message, locale):                  # pylint: disable=w0621
@@ -32,55 +34,67 @@ def prompt(output_key):
     message = messages(output_key, LOCALE)
     print(f"=> {message} <=")
 
-# def input_handler(input_str):
-#     """
-#     Runs all input through cleaning and validation, prompting again
-#     if necessary until input is suitable for calculation.
-#     """
-#     input_str = clean_input(input_str)
+def input_handler(input_str, input_type):
+    """
+    Runs all input through cleaning and validation, prompting again
+    if necessary until input is suitable for calculation. Using 3 different
+    loops to support 3 custom prompts. Explored collapsing them to single
+    while loop with embedded if statements, but that was hard to read
+    and not much shorter.
+    """
+    input_str = clean_input(input_str)
 
-#     if input_str is loan_value:
-#         while is_valid(loan_value) is False:
-#             prompt('invalid_num')
-#             loan_value = input(CURRENCY)
-#             loan_value = clean_input(loan_value)
+    if input_type == 'loan_value':
+        while is_valid(input_str, 'loan_value') is False:
+            prompt('invalid_num')
+            input_str = clean_input(input(CURRENCY))
 
-#     if input_str is apr:
-#         while is_valid(apr) is False:
-#             prompt('invalid_num')
-#             apr = input()
-#             apr = clean_input(apr)
+        input_str = round(float(input_str), 2)  # Currency formatting w/ 2 decimal places
 
-#     if input_str is term_months:
-#         while is_valid(term_months) is False:
-#             prompt('invalid_term')
-#             term_months = input()
-#             term_months = clean_input(term_months)
+    elif input_type == 'apr':
+        while is_valid(input_str, 'apr') is False:
+            prompt('invalid_num')
+            input_str = clean_input(input())
+
+        input_str = float(input_str)
+
+    elif input_type == 'term_months':
+        print('input is term_months') # check 0
+        while is_valid(input_str, 'term_months') is False:
+            prompt('invalid_term')
+            input_str = clean_input(input())
+
+        input_str = int(input_str)  # Whole months only
+
+    return input_str
     
-    # shell function to contain input cleaning and validation including while loop
-
 def clean_input(input_num):
     """
     Removes common disallowed characters from input string for better UX.
     """
     return input_num.replace(CURRENCY, '').replace(',', '').replace('%', '')
 
-def is_valid(number_str):
+def is_valid(number_str, input_type):
     """
     Checks input for validity. Returns True only if number_str will 
-    produce useful results.
+    produce useful calculation results.
     """
     if number_str in ('nan', 'inf', 'infinity'):
         return False
 
-    try:
-        float(number_str)
-    except ValueError:
-        return False
-
-    if number_str is apr:
-        if float(number_str) < 0:
+    if input_type is 'term_months':
+        try:
+            int(number_str)
+        except ValueError:
             return False
+    else:
+        try:
+            float(number_str)
+        except ValueError:
+            return False
+
+    if input_type == 'apr' and float(number_str) < 0:
+        return False
     elif float(number_str) <= 0:
         return False
 
@@ -107,51 +121,20 @@ def print_results():
 # Main loop
 while True:
 
-    loan_value = 0      # pylint: disable=C0103
-    apr = 0             # pylint: disable=C0103
-    term_months = 0     # pylint: disable=C0103
-    # non-constant variables initialized to prevent crash when
-    # calling input_handler()
-
     os.system('clear')
 
     prompt('welcome')
 
     prompt('get_loan_amount')
-    loan_value = input(CURRENCY)
-    # loan_value = input_handler(loan_value)
-
-    loan_value = clean_input(loan_value)
-
-    while is_valid(loan_value) is False:
-        prompt('invalid_num')
-        loan_value = input(CURRENCY)
-        loan_value = clean_input(loan_value)
-
-    loan_value = round(float(loan_value), 2)    # Currency formatting w/ 2 decimal places
+    loan_value = input_handler(input(CURRENCY), 'loan_value')
 
     prompt('get_APR')
-    apr = input()
-    apr = clean_input(apr)
+    apr = input_handler(input(), 'apr')
 
-    while is_valid(apr) is False:
-        prompt('invalid_num')
-        apr = input()
-        apr = clean_input(apr)
-
-    apr = float(apr)
-    monthly_interest = apr / 100 / 12   # Convert APR percentage to monthly rate
+    monthly_interest = apr / 100 / 12   # Convert APR to monthly rate
 
     prompt('get_term')
-    term_months = input()
-    term_months = clean_input(term_months)
-
-    while is_valid(term_months) is False:
-        prompt('invalid_term')
-        term_months = input()
-        term_months = clean_input(term_months)
-
-    term_months = int(term_months)  # Whole months only
+    term_months = input_handler(input(), 'term_months')
 
     monthly_payment = round(calc_monthly_payment(loan_value, monthly_interest, term_months), 2)
     m_p = monthly_payment   # To shorten print line
