@@ -18,7 +18,7 @@ CURRENCY = locale.localeconv()['currency_symbol']
 
 def messages(message, locale):                  # pylint: disable=w0621
     """
-    Accesses and returns output message from OUTPUT dictionary. 
+    Accesses and returns message from OUTPUT dictionary. 
     Alternatively returns input strings if message is not found 
     to be a dictionary key.
     """
@@ -59,7 +59,6 @@ def input_handler(input_str, input_type):
         input_str = float(input_str)
 
     elif input_type == 'term_months':
-        print('input is term_months') # check 0
         while is_valid(input_str, 'term_months') is False:
             prompt('invalid_term')
             input_str = clean_input(input())
@@ -67,7 +66,7 @@ def input_handler(input_str, input_type):
         input_str = int(input_str)  # Whole months only
 
     return input_str
-    
+
 def clean_input(input_num):
     """
     Removes common disallowed characters from input string for better UX.
@@ -82,7 +81,7 @@ def is_valid(number_str, input_type):
     if number_str in ('nan', 'inf', 'infinity'):
         return False
 
-    if input_type is 'term_months':
+    if input_type == 'term_months':
         try:
             int(number_str)
         except ValueError:
@@ -93,9 +92,10 @@ def is_valid(number_str, input_type):
         except ValueError:
             return False
 
-    if input_type == 'apr' and float(number_str) < 0:
+    if input_type != 'apr' and float(number_str) <= 0:
         return False
-    elif float(number_str) <= 0:
+
+    if input_type == 'apr' and float(number_str) < 0:
         return False
 
     return True
