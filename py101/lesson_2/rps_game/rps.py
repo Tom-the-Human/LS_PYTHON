@@ -115,13 +115,19 @@ def score_board(winner1):
          |                 | """)
 
 def score_keeper(winner2):
+    """
+    Uodates score after each round.
+    """
     if winner2 == 'You are':
         score[0] += 1
     elif winner2 == 'Your opponent is':
         score[1] += 1
 
 def final_score(score_):
-
+    """
+    Displays final score upon final win or loss.
+    Graphic only shown if player wins. The "good ending".
+    """
     if score_[0] == 3:
         cowsay.trex('Congratulations, champion! You are our new leige!') # pylint: disable=E1101
     elif score[1] == 3:
@@ -164,7 +170,7 @@ while True:
 
     battle_sound = random.choice(SFX)
     battle_sound.play()
-    pygame.time.delay(1800)
+    pygame.time.delay(1600)
 
     winner = do_battle(player_choice, computer_choice)      # pylint: disable=C0103
 
