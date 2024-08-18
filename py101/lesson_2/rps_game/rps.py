@@ -172,7 +172,8 @@ while True:
     battle_sound.play()
     pygame.time.delay(1600)
 
-    winner = do_battle(player_choice, computer_choice)      # pylint: disable=C0103
+    winner = do_battle(player_choice, computer_choice)  # pylint: disable=C0103
+    # ^ Pylint muffled because winner is not a constant
 
     prompt(f'{winner} victorious!')
     score_board(winner)
