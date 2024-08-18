@@ -2,7 +2,7 @@
 Dinosaur-themed Rock, Paper, Scissors game.
 Includes "best of 5" gameplay, flavor text, single-button inputs,
 basic sound (with randomization to avoid monotony), and
-a single ASCII graphic. Fully Pylint compliant.
+a couple ASCII graphics. Fully Pylint compliant.
 """
 import os
 import random
@@ -103,11 +103,16 @@ def do_battle(player, opponent):
 
 def score_board(winner1):
     """
-    Display score.
+    Display score on ASCII art score board.
     """
 
     score_keeper(winner1)
-    prompt(f'Your score: {score[0]} \n Opponent score: {score[1]}')
+    print(f"""         |                 |
+        =X=================X=
+         |Your score: {score[0]}    | 
+         |Opponent score: {score[1]}| 
+        =X=================X=
+         |                 | """)
 
 def score_keeper(winner2):
     if winner2 == 'You are':
@@ -157,7 +162,6 @@ while True:
     computer_choice = get_computer_choice()
     prompt(f'Your opponent chooses {computer_choice}!')
 
-    input('Press a key to fight!')
     battle_sound = random.choice(SFX)
     battle_sound.play()
     pygame.time.delay(1800)
