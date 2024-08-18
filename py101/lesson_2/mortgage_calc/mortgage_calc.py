@@ -13,25 +13,26 @@ import os
 with open('mortgage_messages.json', 'r', encoding='utf-8') as file:
     OUTPUT = json.load(file)
 
-LOCALE = locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')     # < Set en_US, en_GB, or es_ES
-CURRENCY = locale.localeconv()['currency_symbol']
+LOC = locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+# ^ Set en_US, en_GB, or es_ES
+CUR = locale.localeconv()['currency_symbol']
 
-def messages(message, locale):                  # pylint: disable=w0621
+
+def messages(message, locale_):
     """
-    Accesses and returns message from OUTPUT dictionary. 
-    Alternatively returns input strings if message is not found 
-    to be a dictionary key.
+    Accesses and returns message value from OUTPUT dictionary. 
     """
-    if message not in OUTPUT[locale]:           # pylint: disable=R1705
+    if message not in OUTPUT[locale_]:
         return message      # formatted result must call messages directly
 
-    return OUTPUT[locale][message]
+    return OUTPUT[locale_][message]
 
 def prompt(output_key):
     """
     Format prompts output to user.
     """
-    message = messages(output_key, LOCALE)
+
+    message = messages(output_key, LOC)
     print(f"=> {message} <=")
 
 def input_handler(input_str, input_type):
@@ -47,9 +48,9 @@ def input_handler(input_str, input_type):
     if input_type == 'loan_value':
         while is_valid(input_str, 'loan_value') is False:
             prompt('invalid_num')
-            input_str = clean_input(input(CURRENCY))
+            input_str = clean_input(input(CUR))
 
-        input_str = round(float(input_str), 2)  # Currency formatting w/ 2 decimal places
+        input_str = round(float(input_str), 2)  # Currency formatting
 
     elif input_type == 'apr':
         while is_valid(input_str, 'apr') is False:
@@ -71,7 +72,7 @@ def clean_input(input_num):
     """
     Removes common disallowed characters from input string for better UX.
     """
-    return input_num.replace(CURRENCY, '').replace(',', '').replace('%', '')
+    return input_num.replace(CUR, '').replace(',', '').replace('%', '')
 
 def is_valid(number_str, input_type):
     """
@@ -100,23 +101,24 @@ def is_valid(number_str, input_type):
 
     return True
 
-def calc_monthly_payment(loan_amount, monthly_rate, months):
+def calculate(l_a, m_r, months):
     """
-    Calculates monthly payment.
+    Calculates monthly payment. Abbreviations to keep lines short:
+    l_a = loan_amount, m_r = monthly_rate
     """
-    if monthly_rate == 0:
-        return loan_amount / months
+    if m_r == 0:
+        return l_a / months
 
-    return loan_amount * ((monthly_rate) / (1 - (1 + monthly_rate) ** (-months)))
+    return l_a * ((m_r) / (1 - (1 + m_r) ** (-months)))
 
 def print_results():
     """
     Prints results to terminal.
     """
-    prompt(messages('print_amount', LOCALE).format(CURRENCY=CURRENCY, loan_value=loan_value))
-    prompt(messages('print_apr', LOCALE).format(apr=apr))
-    prompt(messages('print_term', LOCALE).format(term_months=term_months))
-    prompt(messages('print_result', LOCALE).format(CURRENCY=CURRENCY, monthly_pay=m_p))
+    prompt(messages('print_amount', LOC).format(CURRENCY=CUR, loan_value=l_v))
+    prompt(messages('print_apr', LOC).format(apr=apr))
+    prompt(messages('print_term', LOC).format(term_months=term_months))
+    prompt(messages('print_result', LOC).format(CURRENCY=CUR, monthly_pay=m_p))
 
 # Main loop
 while True:
@@ -126,7 +128,8 @@ while True:
     prompt('welcome')
 
     prompt('get_loan_amount')
-    loan_value = input_handler(input(CURRENCY), 'loan_value')
+    loan_value = input_handler(input(CUR), 'loan_value')
+    l_v = loan_value    # To shorten print line
 
     prompt('get_APR')
     apr = input_handler(input(), 'apr')
@@ -135,8 +138,9 @@ while True:
 
     prompt('get_term')
     term_months = input_handler(input(), 'term_months')
+    t_m = term_months   # To shorten next monthly_payment assignment
 
-    monthly_payment = round(calc_monthly_payment(loan_value, monthly_interest, term_months), 2)
+    monthly_payment = round(calculate(l_v, monthly_interest, t_m), 2)
     m_p = monthly_payment   # To shorten print line
     print_results()
 
