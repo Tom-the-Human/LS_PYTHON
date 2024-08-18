@@ -129,15 +129,18 @@ def another_battle():
     prompt('Another battle? (y/n)')
     restart = input()
 
-    while restart and restart[0].lower() not in ('y', 'n'):
+    while restart and restart.lower() not in ('y', 'n', 'yes', 'no'):
         prompt('You cannot be heard over the roaring beasts. Speak up! (y/n)')
         restart = input()
 
-    if restart and restart[0].lower() == 'n':
+    if restart and restart.lower() in ('n', 'no'):
         prompt('Farewell, dino warrior!')
         return False
 
-    return True
+    if restart and restart[0].lower() in ('y', 'yes'):
+        return True
+
+    return False
 
 # Start
 os.system('clear')
