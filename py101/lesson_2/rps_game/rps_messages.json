@@ -1,0 +1,9 @@
+{
+    "battle_text": {
+        "r_vs_s": "The raptor charges in fast and low! The slow stegosaurus can't react quickly enough to defend against the onslaught.",
+        "p_vs_s": "The pterodactyl swoops down, but can't pierce the stegosaurus' armored hide. The stegosaurus swings its tail and knocks the pterodactyl to the ground!",
+        "r_vs_p": "The raptor rushes in, but the winged pterodactyl takes flight. With the raptor exhausted, the pterodactyl swoops in for the kill!",
+        "tie": "The terrible creatures roar and bellow at one another. "
+    }
+
+}

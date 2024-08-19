@@ -2,37 +2,60 @@
 Dinosaur-themed Rock, Paper, Scissors game.
 Includes "best of 5" gameplay, flavor text, single-button inputs,
 basic sound (with randomization to avoid monotony), and
-a couple ASCII graphics. Fully Pylint compliant.
+a couple ASCII graphics. Sound and music credits in README.
+Fully Pylint compliant.
 """
 import os
+import json
 import random
 import cowsay
 import pygame
 
 pygame.mixer.init()
 
+with open('rps_messages.json', 'r', encoding='utf-8') as file:
+    OUTPUT = json.load(file)
+
 VALID_CHOICES = {'1': 'Raptor', '2': 'Pterodactyl', '3': 'Stegosaurus'}
-SFX = [pygame.mixer.Sound("dinosaur-4.mp3"),
-       pygame.mixer.Sound("dinosaur-growl.mp3"),
-       pygame.mixer.Sound("dinosaur-roar-with-growls.mp3"),
-       pygame.mixer.Sound("dinosaur.mp3"),]
+SFX = [pygame.mixer.Sound(f"dinosaur-{i}.mp3") for i in range(1, 5)]
 MUSIC = pygame.mixer.music.load("music-21217.mp3")
+RED = '\033[31m'
+GREEN = '\033[32m'
+YELLOW = '\033[33m'
+BOLD = '\033[1m'
+RESET = '\033[0m'
 
 def prompt(message):
     """
     Output formatter.
     """
-    print(f"=> {message} <=")
+    print(f"🦕 {message} 🦖")
+
+def messages(outer_key, inner_key):
+    """
+    Accesses and returns message value from OUTPUT dictionary.
+    For now, only battle_text is in json, but formatted so that
+    other text could be moved if desired.
+    """
+    return OUTPUT[outer_key][inner_key]
+
+def startup():
+    os.system('clear')
+    pygame.mixer.music.play(loops = -1)
+    cowsay.trex(f'{YELLOW}Welcome to Raptor, Pterodactyl, Stegosaurus!{RESET}') # pylint: disable=E1101
+                            # Pylint muffled, Cowsay does have trex member ^
+    prompt('A dino-themed "Rock, Paper, Scissors" battle')
+    prompt('Score 3 wins to be crowned ruler of the dinosaurs!')
 
 def get_player_choice():
     """
     Prompt user for choice and returns choice.
     """
-    prompt("Use 1, 2, or 3 to choose your monstrous lizard!")
+    prompt(f'Use {BOLD}1, 2, or 3{RESET} to choose your champion!')
     choice = input('(1) Raptor \n(2) Pterodactyl \n(3) Stegosaurus\n')
 
     while choice not in VALID_CHOICES:
-        prompt('Dino discrepancy!')
+        prompt(f'{YELLOW}Dino discrepancy!{RESET}')
         return get_player_choice()
 
     return VALID_CHOICES[choice]
@@ -43,49 +66,33 @@ def get_computer_choice():
     """
     return VALID_CHOICES[random.choice(list(VALID_CHOICES.keys()))]
 
-def flavor_text(choice1, choice2):
+def roar():
     """
-    Fight description for fun.
+    Play sound effect at round start.
     """
-    match (choice1, choice2):
-        case ('Raptor', 'Stegosaurus'):
-            prompt("The raptor charges in fast and low!"
-                " The slow stegosaurus can't react quickly"
-                 " enough to defend against the onslaught.")
-        case ('Stegosaurus', 'Raptor'):
-            prompt("The raptor charges in fast and low!"
-                " The slow stegosaurus can't react quickly"
-                 " enough to defend against the onslaught.")
-        case ('Stegosaurus', 'Pterodactyl'):
-            prompt("The pterodactyl swoops down, but can't"
-                   " pierce the stegosaurus' armored hide."
-                " The stegosaurus swings its tail and knocks"
-                " the pterodactyl to the ground!")
-        case ('Pterodactyl', 'Stegosaurus'):
-            prompt("The pterodactyl swoops down, but can't"
-                   " pierce the stegosaurus' armored hide."
-                " The stegosaurus swings its tail and knocks"
-                " the pterodactyl to the ground!")
-        case ('Pterodactyl', 'Raptor'):
-            prompt("The raptor rushes in, but the winged"
-                   " pterodactyl takes flight."
-                " With the raptor exhausted, the pterodactyl"
-                " swoops in for the kill!")
-        case ('Raptor', 'Pterodactyl'):
-            prompt("The raptor rushes in, but the winged"
-                   " pterodactyl takes flight."
-                " With the raptor exhausted, the pterodactyl"
-                " swoops in for the kill!")
+    random.choice(SFX).play()
+
+def battle_text(player_, opponent_):
+    """
+    Fight description for fun. Strings extracted to json
+    due to length.
+    """
+    match (player_, opponent_):
+        case ('Raptor', 'Stegosaurus') | ('Stegosaurus', 'Raptor'):
+            prompt(messages('battle_text', 'r_vs_s'))
+        case ('Stegosaurus', 'Pterodactyl') | ('Pterodactyl', 'Stegosaurus'):
+            prompt(messages('battle_text', 'p_vs_s'))
+        case ('Pterodactyl', 'Raptor') | ('Raptor', 'Pterodactyl'):
+            prompt(messages('battle_text', 'r_vs_p'))
         case _:
-            prompt("The terrible creatures roar and bellow at one another. ")
+            prompt(messages('battle_text', 'tie'))
 
 
-def do_battle(player, opponent):
+def determine_round_result(player, opponent):
     """
     Compares choices to determine and return winner.
-    Includes call to flavor_text() for fun.
     """
-    flavor_text(player, opponent)
+    battle_text(player, opponent)
 
     winning_pairs = (
         ('Raptor', 'Stegosaurus'),
@@ -94,72 +101,84 @@ def do_battle(player, opponent):
     )
 
     if (player, opponent) in winning_pairs:
-        return 'You are'
+        return 'player'
 
     if player == opponent:
-        return 'A fierce battle ensues, but neither combatant emerges'
+        return None
 
-    return 'Your opponent is'
+    return 'opponent'
+
+def display_winner(winner1):
+    """
+    Print round winner. Input statement to allow user
+    to read at own pace.
+    """
+    round_over = {
+        'player': f'{GREEN}You are victorious!{RESET}',
+        'opponent': f'{RED}Your opponent is victorious!{RESET}',
+        None: f'{YELLOW}A fierce battle ensues,'
+         f' but neither combatant emerges victorious.{RESET}'
+    }
+
+    prompt(round_over[winner1])
+    input(f'\n{BOLD}Enter/Return{RESET} to continue')
+
+def score_keeper(winner2):
+    """
+    Updates score after each round.
+    """
+    if winner2 == 'player':
+        score[0] += 1
+    elif winner2 == 'opponent':
+        score[1] += 1
 
 def score_board(winner1):
     """
     Display score on ASCII art score board.
+    Clears screen to keep scoreboard at top.
     """
-
+    os.system('clear')
     score_keeper(winner1)
     print(f"""         |                 |
         =X=================X=
-         |Your score: {score[0]}    | 
-         |Opponent score: {score[1]}| 
+         |Your score:     {BOLD}{score[0]}{RESET}| 
+         |Opponent score: {BOLD}{score[1]}{RESET}| 
         =X=================X=
          |                 | """)
 
-def score_keeper(winner2):
+def display_result(score_):
     """
-    Uodates score after each round.
-    """
-    if winner2 == 'You are':
-        score[0] += 1
-    elif winner2 == 'Your opponent is':
-        score[1] += 1
-
-def final_score(score_):
-    """
-    Displays final score upon final win or loss.
+    Displays final outcome upon 3 rounds won or lost.
     Graphic only shown if player wins. The "good ending".
     """
+    roar()  # Additional roar on completion
     if score_[0] == 3:
-        cowsay.trex('Congratulations, champion! You are our new leige!') # pylint: disable=E1101
+        cowsay.trex(f'''{GREEN}Congratulations, conqueror!
+                     You are our new leige!{RESET}''') # pylint: disable=E1101
     elif score[1] == 3:
-        prompt('You have not proven yourself worthy. You must try again!')
+        prompt(f'{RED}You have not proven yourself worthy.'
+               f' You must try again!{RESET}')
 
 def another_battle():
     """
     Prompts the user to play again or not.
     """
-    prompt('Another battle? (y/n)')
-    restart = input()
+    prompt('Will you fight again? (y/n)')
+    restart = input().lower()
 
-    while restart and restart.lower() not in ('y', 'n', 'yes', 'no'):
+    while restart not in ('y', 'n', 'yes', 'no'):
         prompt('You cannot be heard over the roaring beasts. Speak up! (y/n)')
-        restart = input()
+        restart = input().lower()
 
-    if restart and restart.lower() in ('n', 'no'):
+    if restart in ('n', 'no'):
         prompt('Farewell, dino warrior!')
         return False
 
-    if restart and restart[0].lower() in ('y', 'yes'):
-        return True
-
-    return False
+    return restart in ('y', 'yes')
 
 # Start
-os.system('clear')
-pygame.mixer.music.play(loops = -1)
-score = [0, 0]
-cowsay.trex('Welcome to Raptor, Pterodactyl, Stegosaurus!') # pylint: disable=E1101
-prompt('A dino-themed "Rock, Paper, Scissors" game')
-prompt('Score 3 wins to be crowned ruler of the dinosaurs!')
+startup()
+score = [0, 0]  # Initialize score at global scope
 
 while True:
     player_choice = get_player_choice()
@@ -167,21 +186,21 @@ while True:
 
     computer_choice = get_computer_choice()
     prompt(f'Your opponent chooses {computer_choice}!')
+    print()     # Blank line to break up output
 
-    battle_sound = random.choice(SFX)
-    battle_sound.play()
-    pygame.time.delay(1600)
+    roar()
+    pygame.time.delay(1000)     # Suspense! ;)
 
-    winner = do_battle(player_choice, computer_choice)  # pylint: disable=C0103
-    # ^ Pylint muffled because winner is not a constant
-
-    prompt(f'{winner} victorious!')
+    winner = determine_round_result(player_choice, computer_choice)  # pylint: disable=C0103
+    # ^ Pylint muffled because winner is not a constant. Should it be?
+    pygame.time.delay(1000)
+    display_winner(winner)
     score_board(winner)
 
     if (score[0] != 3) and (score[1] != 3):
         continue
 
-    final_score(score)
+    display_result(score)
     score = [0, 0]
 
     if not another_battle():
