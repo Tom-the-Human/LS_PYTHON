@@ -1,7 +1,10 @@
 Raptor, Pterodactyl, Stegosaurus
 ~A dino-themed Rock, Paper, Scissors game~
 
-*Requires cowsay and pygame libraries*
+**Requires cowsay and pygame libraries**
+Try:
+pip install cowsay
+pip install pygame
 
 I recommend increasing the size of your terminal window to as large as possible and turning on speakers.
 Not critical, but the ASCII dinosaur may not display properly in a small terminal window.

@@ -16,7 +16,7 @@ pygame.mixer.init()
 with open('rps_messages.json', 'r', encoding='utf-8') as file:
     OUTPUT = json.load(file)
 
-VALID_CHOICES = {'1': 'Raptor', '2': 'Pterodactyl', '3': 'Stegosaurus'}
+VALID_CHOICES = {'1': 'Raptor','2': 'Pterodactyl', '3': 'Stegosaurus'}
 SFX = [pygame.mixer.Sound(f"dinosaur-{i}.mp3") for i in range(1, 5)]
 MUSIC = pygame.mixer.music.load("music-21217.mp3")
 RED = '\033[31m'
@@ -31,34 +31,59 @@ def prompt(message):
     """
     print(f"🦕 {message} 🦖")
 
-def messages(outer_key, inner_key):
+def messages(category, message_key):
     """
     Accesses and returns message value from OUTPUT dictionary.
     For now, only battle_text is in json, but formatted so that
     other text could be moved if desired.
     """
-    return OUTPUT[outer_key][inner_key]
+    return OUTPUT[category][message_key]
 
 def startup():
     os.system('clear')
-    pygame.mixer.music.play(loops = -1)
     cowsay.trex(f'{YELLOW}Welcome to Raptor, Pterodactyl, Stegosaurus!{RESET}') # pylint: disable=E1101
                             # Pylint muffled, Cowsay does have trex member ^
     prompt('A dino-themed "Rock, Paper, Scissors" battle')
     prompt('Score 3 wins to be crowned ruler of the dinosaurs!')
 
+def display_rules():
+    os.system('clear')
+    print('''
+           Just like in classic Rock, Paper, Scissors where
+           (r)ock loses to (p)aper loses to (s)cissors loses to (r)ock,
+           so it is in this Jurassic jungle. In this battle,
+           (r)aptor loses to (p)terodactyle loses to (s)tegosaurus,
+           which in turn loses to (r)aptor. 
+           
+           If you get confused, just remember R < P < S!
+           
+           In this jungle it's always the best out of 5 rounds to win,
+           so the first contestant to score 3 takes all!
+
+           ''')
+    print()
+    input('Enter/Return to continue')
+    os.system('clear')
+
 def get_player_choice():
     """
     Prompt user for choice and returns choice.
     """
-    prompt(f'Use {BOLD}1, 2, or 3{RESET} to choose your champion!')
-    choice = input('(1) Raptor \n(2) Pterodactyl \n(3) Stegosaurus\n')
+    while True:
+        prompt(f'Use {BOLD}1, 2, or 3{RESET} to choose your champion!\n'
+               f'(Or use {BOLD}(R){RESET} to read the rules)')
+        choice = input('(1) Raptor \n(2) Pterodactyl'
+                       ' \n(3) Stegosaurus\n(R) Rules\n')
+        choice = choice.strip().lower()
 
-    while choice not in VALID_CHOICES:
+        if choice == 'r':
+            display_rules()
+            continue  # Restart the loop after displaying rules
+
+        if choice in VALID_CHOICES:
+            return VALID_CHOICES[choice]
+
         prompt(f'{YELLOW}Dino discrepancy!{RESET}')
-        return get_player_choice()
-
-    return VALID_CHOICES[choice]
 
 def get_computer_choice():
     """
@@ -108,7 +133,7 @@ def determine_round_result(player, opponent):
 
     return 'opponent'
 
-def display_winner(winner1):
+def display_winner(winner_):
     """
     Print round winner. Input statement to allow user
     to read at own pace.
@@ -120,39 +145,38 @@ def display_winner(winner1):
          f' but neither combatant emerges victorious.{RESET}'
     }
 
-    prompt(round_over[winner1])
+    prompt(round_over[winner_])
     input(f'\n{BOLD}Enter/Return{RESET} to continue')
 
-def score_keeper(winner2):
+def score_keeper(winner_):
     """
     Updates score after each round.
     """
-    if winner2 == 'player':
+    if winner_ == 'player':
         score[0] += 1
-    elif winner2 == 'opponent':
+    elif winner_ == 'opponent':
         score[1] += 1
 
-def score_board(winner1):
+def display_score_board():
     """
     Display score on ASCII art score board.
     Clears screen to keep scoreboard at top.
     """
     os.system('clear')
-    score_keeper(winner1)
     print(f"""         |                 |
         =X=================X=
-         |Your score:     {BOLD}{score[0]}{RESET}| 
-         |Opponent score: {BOLD}{score[1]}{RESET}| 
+         |Your score:     {BOLD}{score[0]}{RESET}|
+         |Opponent score: {BOLD}{score[1]}{RESET}|
         =X=================X=
          |                 | """)
 
-def display_result(score_):
+def display_result():
     """
     Displays final outcome upon 3 rounds won or lost.
     Graphic only shown if player wins. The "good ending".
     """
     roar()  # Additional roar on completion
-    if score_[0] == 3:
+    if score[0] == 3:
         cowsay.trex(f'''{GREEN}Congratulations, conqueror!
                      You are our new leige!{RESET}''') # pylint: disable=E1101
     elif score[1] == 3:
@@ -176,32 +200,41 @@ def another_battle():
 
     return restart in ('y', 'yes')
 
+def play_rps():
+    """
+    Main function
+    """
+    startup()
+
+    while True:
+        player_choice = get_player_choice()
+        prompt(f'You have chosen {player_choice}!')
+
+        computer_choice = get_computer_choice()
+        prompt(f'Your opponent chooses {computer_choice}!')
+        print() # Blank line to space output
+
+        roar()
+        pygame.time.delay(1000)     # Suspense! ;)
+
+        winner = determine_round_result(player_choice, computer_choice)
+        pygame.time.delay(1000)
+        display_winner(winner)
+        score_keeper(winner)
+        display_score_board()
+
+        if (score[0] != 3) and (score[1] != 3):
+            continue
+
+        display_result()
+
+        if not another_battle():
+            break
+
+        play_rps()
+
 # Start
-startup()
-score = [0, 0]  # Initialize score at global scope
-
-while True:
-    player_choice = get_player_choice()
-    prompt(f'You have chosen {player_choice}!')
-
-    computer_choice = get_computer_choice()
-    prompt(f'Your opponent chooses {computer_choice}!')
-    print()     # Blank line to break up output
-
-    roar()
-    pygame.time.delay(1000)     # Suspense! ;)
-
-    winner = determine_round_result(player_choice, computer_choice)  # pylint: disable=C0103
-    # ^ Pylint muffled because winner is not a constant. Should it be?
-    pygame.time.delay(1000)
-    display_winner(winner)
-    score_board(winner)
-
-    if (score[0] != 3) and (score[1] != 3):
-        continue
-
-    display_result(score)
-    score = [0, 0]
-
-    if not another_battle():
-        break
+pygame.mixer.music.play(loops = -1)
+# Music moved outside play_rps() so it's not interrupted on new game
+score = [0, 0]  # Needs to be accessed and updated by various functions
+play_rps()
