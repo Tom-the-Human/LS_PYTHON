@@ -148,16 +148,16 @@ def display_winner(winner_):
     prompt(round_over[winner_])
     input(f'\n{BOLD}Enter/Return{RESET} to continue')
 
-def score_keeper(winner_):
+def score_keeper(winner_, score_):
     """
     Updates score after each round.
     """
     if winner_ == 'player':
-        score[0] += 1
+        score_[0] += 1
     elif winner_ == 'opponent':
-        score[1] += 1
+        score_[1] += 1
 
-def display_score_board():
+def display_score_board(score_):
     """
     Display score on ASCII art score board.
     Clears screen to keep scoreboard at top.
@@ -165,21 +165,21 @@ def display_score_board():
     os.system('clear')
     print(f"""         |                 |
         =X=================X=
-         |Your score:     {BOLD}{score[0]}{RESET}|
-         |Opponent score: {BOLD}{score[1]}{RESET}|
+         |Your score:     {BOLD}{score_[0]}{RESET}|
+         |Opponent score: {BOLD}{score_[1]}{RESET}|
         =X=================X=
          |                 | """)
 
-def display_result():
+def display_result(score_):
     """
     Displays final outcome upon 3 rounds won or lost.
     Graphic only shown if player wins. The "good ending".
     """
     roar()  # Additional roar on completion
-    if score[0] == 3:
+    if score_[0] == 3:
         cowsay.trex(f'''{GREEN}Congratulations, conqueror!
                      You are our new leige!{RESET}''') # pylint: disable=E1101
-    elif score[1] == 3:
+    elif score_[1] == 3:
         prompt(f'{RED}You have not proven yourself worthy.'
                f' You must try again!{RESET}')
 
@@ -205,6 +205,7 @@ def play_rps():
     Main function
     """
     startup()
+    score = [0, 0]  # Needs to be accessed and updated by various functions
 
     while True:
         player_choice = get_player_choice()
@@ -220,13 +221,13 @@ def play_rps():
         winner = determine_round_result(player_choice, computer_choice)
         pygame.time.delay(1000)
         display_winner(winner)
-        score_keeper(winner)
-        display_score_board()
+        score_keeper(winner, score)
+        display_score_board(score)
 
         if (score[0] != 3) and (score[1] != 3):
             continue
 
-        display_result()
+        display_result(score)
 
         if not another_battle():
             break
@@ -236,5 +237,4 @@ def play_rps():
 # Start
 pygame.mixer.music.play(loops = -1)
 # Music moved outside play_rps() so it's not interrupted on new game
-score = [0, 0]  # Needs to be accessed and updated by various functions
 play_rps()
