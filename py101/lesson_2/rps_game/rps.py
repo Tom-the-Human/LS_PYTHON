@@ -39,10 +39,10 @@ def messages(category, message_key):
     """
     return OUTPUT[category][message_key]
 
-def startup():
+def display_title():
     os.system('clear')
     cowsay.trex(f'{YELLOW}Welcome to Raptor, Pterodactyl, Stegosaurus!{RESET}') # pylint: disable=E1101
-                            # Pylint muffled, Cowsay does have trex member ^
+                                # Pylint muffled, Cowsay does have trex member ^
     prompt('A dino-themed "Rock, Paper, Scissors" battle')
     prompt('Score 3 wins to be crowned ruler of the dinosaurs!')
 
@@ -204,8 +204,8 @@ def play_rps():
     """
     Main function
     """
-    startup()
-    score = [0, 0]  # Needs to be accessed and updated by various functions
+    display_title()
+    score = [0, 0]  # [0] is player score, [1] is CPU score
 
     while True:
         player_choice = get_player_choice()
