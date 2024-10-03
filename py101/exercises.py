@@ -237,6 +237,105 @@ def negative(num):
     
     return num
 
-print(negative(5) == -5)      # True
-print(negative(-3) == -3)     # True
-print(negative(0) == 0)       # True
+# print(negative(5) == -5)      # True
+# print(negative(-3) == -3)     # True
+# print(negative(0) == 0)       # True
+
+def repeat(string, num):
+    for i in range(num):
+        print(string)
+_ = "hello" # apparently a single underscore is a legal name!
+
+# repeat(_, 3)
+
+def crunch(input_string):
+    last_char = ''
+    output_string = ''
+    for char in input_string:
+        if char != last_char:
+            output_string += char
+        last_char = char
+    return output_string
+
+# These examples should all print True
+# print(crunch('ddaaiillyy ddoouubbllee') == 'daily double')
+# print(crunch('4444abcabccba') == '4abcabcba')
+# print(crunch('ggggggggggggggg') == 'g')
+# print(crunch('abc') == 'abc')
+# print(crunch('a') == 'a')
+# print(crunch('') == '')
+
+def print_in_box(input_string):
+    print('+' + ('-' * (len(input_string) + 2)) + '+')
+    print('|' + (' ' * (len(input_string) + 2)) + '|')
+    print(f'| {input_string} |')
+    print('|' + (' ' * (len(input_string) + 2)) + '|')
+    print('+' + ('-' * (len(input_string) + 2)) + '+')
+
+# print_in_box('To boldly go where no one has gone before.')
+
+def stringy(int_input):
+    string_out = ''
+    for i in range(1, int_input+1):
+        string_out += str(int(i % 2))
+    return string_out
+
+# print(stringy(6) == "101010")           # True
+# print(stringy(9) == "101010101")        # True
+# print(stringy(4) == "1010")             # True
+# print(stringy(7) == "1010101")          # True
+
+def triangle(num):
+    for i in range(num + 1):
+        print(' ' * (num - i) + '*' * i)
+
+# triangle(5)
+# triangle(9)
+
+def noun():
+    return input('Enter a noun: ')
+
+def verb():
+    return input('Enter a verb: ')
+
+def adjective():
+    return input('Enter an adjective: ')
+
+def adverb():
+    return input('Enter an adverb: ')
+
+# print(f'Once upon a time, a {noun()} named Tom {verb()}ed a'
+#      f' {noun()} {adverb()}. What a {adjective()} guy.')
+
+def twice(num):
+    string_num = str(num)
+    first_half = string_num[0:len(string_num) // 2]
+    last_half =  string_num[len(string_num) // 2:]
+    
+    if first_half == last_half:
+        return num
+        
+    return num * 2
+
+# print(twice(37) == 74)                  # True
+# print(twice(44) == 44)                  # True
+# print(twice(334433) == 668866)          # True
+
+def get_grade(score1, score2, score3):
+    mean = (score1 + score2 + score3) / 3
+    
+    if mean < 60:
+        grade = 'F'
+    elif mean < 70:
+        grade = 'D'
+    elif mean < 80:
+        grade = 'C'
+    elif mean < 90:
+        grade = 'B'
+    else:
+        grade = 'A'
+
+    return grade
+
+print(get_grade(95, 90, 93) == "A")      # True
+print(get_grade(50, 50, 95) == "D")      # True
