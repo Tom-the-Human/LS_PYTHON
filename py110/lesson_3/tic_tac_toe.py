@@ -23,9 +23,9 @@
 # 9 If yes, go to #1
 # 10 Goodbye!
 # You can see from the above sequence that there are two main loops:
-# An outer loop between steps #1 and #9 that repeats as 
+# An outer loop between steps #1 and #9 that repeats as
 # long as the player wants to keep playing.
-# An inner loop between steps #2 and #7 that repeats as 
+# An inner loop between steps #2 and #7 that repeats as
 # long as there is no winner and the board isn't full.
 
 # E
@@ -33,7 +33,7 @@
 # 1|__|_X|__|    A possible representation
 # 2|__|_O|__|
 # 3|_O|__|__|
-# Other options will likely come to mind while working on it. 
+# Other options will likely come to mind while working on it.
 
 # D
 # I think a list of lists for the board, with strings for board rep
@@ -50,34 +50,42 @@ import random
 INITIAL_MARKER = ' '
 HUMAN_MARKER = 'X'
 CPU_MARKER = 'O'
+WINNING_SCORE = 3
+WINNING_LINES = [
+        [1, 2, 3], [4, 5, 6], [7, 8, 9],
+        [1, 4, 7], [2, 5, 8], [3, 6, 9],
+        [1, 5, 9], [3, 5, 7]
+    ]
 
 def prompt(message):
     print(f'<#> {message} <#>')
 
 def join_or(iterable, delimiter=', ', final_option=' or '):
+    output = ''
     if len(iterable) == 0:
-        return ''
+        pass
     elif len(iterable) == 1:
-        return str(iterable[0])
+        output = str(iterable[0])
     elif len(iterable) == 2:
-        return f"{iterable[0]}{final_option}{iterable[1]}"
+        output = f"{iterable[0]}{final_option}{iterable[1]}"
     else:
-        return delimiter.join(str(item) for item in iterable[:-1]) \
+        output = delimiter.join(str(item) for item in iterable[:-1]) \
             + f"{final_option}{iterable[-1]}"
 
+    return output
 
-def display_board(board):
+def display_board(board, score):
     os.system('clear')
     prompt(f"You are {HUMAN_MARKER}. Computer is {CPU_MARKER}.")
     print('')
     print('     |     |')
     print(f"  {board[1]}  |  {board[2]}  |  {board[3]}")
     print('     |     |')
-    print('-----+-----+-----')
+    print(f'-----+-----+-----      Your score: {score[0]}')
     print('     |     |')
     print(f"  {board[4]}  |  {board[5]}  |  {board[6]}")
     print('     |     |')
-    print('-----+-----+-----')
+    print(f'-----+-----+-----    Computer score: {score[1]}')
     print('     |     |')
     print(f"  {board[7]}  |  {board[8]}  |  {board[9]}")
     print('     |     |')
@@ -89,6 +97,22 @@ def initialize_board():
 def empty_squares(board):
     return [key for key, value in board.items()
             if value == INITIAL_MARKER]
+
+def find_at_risk_square(line, board):
+    markers_in_line = [board[square] for square in line]
+
+    if markers_in_line.count(CPU_MARKER) == 2:
+        for square in line:
+            if board[square] == INITIAL_MARKER:
+                return square
+    elif markers_in_line.count(HUMAN_MARKER) == 2:
+        for square in line:
+            if board[square] == INITIAL_MARKER:
+                return square
+    elif board[5] == INITIAL_MARKER:
+        return 5
+
+    return None
 
 def player_chooses_square(board):
 
@@ -102,7 +126,7 @@ def player_chooses_square(board):
 
         if square in empty_squares(board):
             break
-        
+
         prompt("Sorry, that's not a valid choice.")
 
     board[square] = HUMAN_MARKER
@@ -110,7 +134,16 @@ def player_chooses_square(board):
 def computer_chooses_square(board):
     if len(empty_squares(board)) == 0:
         return
-    square = random.choice(empty_squares(board))
+
+    for line in WINNING_LINES:
+        square = find_at_risk_square(line, board)
+        if square:
+            board[square] = CPU_MARKER
+            return
+
+    if not square:
+        square = random.choice(empty_squares(board))
+
     board[square] = CPU_MARKER
 
 def board_full(board):
@@ -120,19 +153,63 @@ def someone_won(board):
     return bool(detect_winner(board))
 
 def detect_winner(board):
-    winning_lines = [
-        [1, 2, 3], [4, 5, 6], [7, 8, 9],
-        [1, 4, 7], [2, 5, 8], [3, 6, 9],
-        [1, 5, 9], [3, 5, 7]
-    ]
-
-    for line in winning_lines:
+    winner = None
+    for line in WINNING_LINES:
         if all(board[sq] == HUMAN_MARKER for sq in line):
-                return 'You'
+            winner = 'You'
         elif all(board[sq]== CPU_MARKER for sq in line):
-                return 'Computer'
-        
-    return None
+            winner = 'The computer'
+
+    return winner
+
+def who_goes_first():
+    prompt('Who will go first? Enter 1, 2, or 3')
+    prompt('1. Player')
+    prompt('2. Computer')
+    prompt('3. Coin toss')
+    prompt('Any other entry will result in a coin toss.')
+    selection = input().strip()
+
+    if selection not in {'1', '2'}:
+        selection = random.choice(['1', '2'])
+
+    return selection
+
+def play_round(board, score):
+    first = who_goes_first()
+    while first == '1':
+        display_board(board, score)
+        prompt('You go first.')
+
+        player_chooses_square(board)
+        display_board(board, score)
+        if someone_won(board) or board_full(board):
+            break
+
+        computer_chooses_square(board)
+        display_board(board, score)
+        if someone_won(board) or board_full(board):
+            break
+
+    while first == '2':
+        display_board(board, score)
+        prompt('Computer goes first.')
+
+        computer_chooses_square(board)
+        display_board(board, score)
+        if someone_won(board) or board_full(board):
+            break
+
+        player_chooses_square(board)
+        display_board(board, score)
+        if someone_won(board) or board_full(board):
+            break
+
+    winner = detect_winner(board)
+    if winner == 'You':
+        score[0] += 1
+    elif winner == 'The computer':
+        score[1] += 1
 
 def play_again():
     prompt('Play again? (y/n)')
@@ -146,30 +223,37 @@ def play_again():
     return answer in {'y', 'yes'}
 
 def main():
+    os.system('clear')
+    prompt("Welcome to Tic-Tac-Toe! 3-in-a-row wins a point.")
+    prompt("First to score 3 points wins the game!")
+    print('')
     while True:
-        board = initialize_board()
-
+        score = [0, 0]
         while True:
-            display_board(board)
+            board = initialize_board()
 
-            player_chooses_square(board)
-            display_board(board)
-            if someone_won(board) or board_full(board):
+            play_round(board, score)
+
+            winner = detect_winner(board)
+            if winner:
+                prompt(f"{winner} scored a point!")
+                input('Enter/Return to continue')
+            else:
+                prompt("It's a tie! Let's go again!")
+                input('Enter/Return to continue')
+
+            display_board(board, score)
+
+            if score[0] == WINNING_SCORE:
+                prompt("🎉Congratulations! You win!🎊")
                 break
-
-            computer_chooses_square(board)
-            display_board(board)
-            if someone_won(board) or board_full(board):
+            if score[1] == WINNING_SCORE:
+                prompt("The computer won the game. Better luck next time!")
                 break
-
-        if someone_won(board):
-            prompt(f"{detect_winner(board)} won!")
-        else:
-            prompt("It's a tie!")
 
         if not play_again():
             break
-    
+
     prompt("Thanks for playing!")
 
 main()
