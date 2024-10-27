@@ -56,6 +56,9 @@ WINNING_LINES = [
         [1, 4, 7], [2, 5, 8], [3, 6, 9],
         [1, 5, 9], [3, 5, 7]
     ]
+GRAY = '\033[1;30m'
+BOLD = '\033[1m'
+RESET = '\033[0m'
 
 def prompt(message):
     print(f'<#> {message} <#>')
@@ -78,16 +81,19 @@ def display_board(board, score):
     os.system('clear')
     prompt(f"You are {HUMAN_MARKER}. Computer is {CPU_MARKER}.")
     print('')
-    print('     |     |')
-    print(f"  {board[1]}  |  {board[2]}  |  {board[3]}")
+    print(f'{GRAY}  1  {RESET}|{GRAY}  2  {RESET}|{GRAY}  3{RESET}')
+    print(f"{BOLD}  {board[1]}  {RESET}|{BOLD}  {board[2]}" +
+          f"  {RESET}|{BOLD}  {board[3]}{RESET}")
     print('     |     |')
     print(f'-----+-----+-----      Your score: {score[0]}')
-    print('     |     |')
-    print(f"  {board[4]}  |  {board[5]}  |  {board[6]}")
+    print(f'{GRAY}  4  {RESET}|{GRAY}  5  {RESET}|{GRAY}  6{RESET}')
+    print(f"{BOLD}  {board[4]}  {RESET}|{BOLD}  {board[5]}" +
+          f"  {RESET}|{BOLD}  {board[6]}{RESET}")
     print('     |     |')
     print(f'-----+-----+-----    Computer score: {score[1]}')
-    print('     |     |')
-    print(f"  {board[7]}  |  {board[8]}  |  {board[9]}")
+    print(f'{GRAY}  7  {RESET}|{GRAY}  8  {RESET}|{GRAY}  9{RESET}')
+    print(f"{BOLD}  {board[7]}  {RESET}|{BOLD}  {board[8]}" +
+          f"  {RESET}|{BOLD}  {board[9]}{RESET}")
     print('     |     |')
     print('')
 
@@ -100,6 +106,7 @@ def empty_squares(board):
 
 def find_at_risk_square(line, board):
     markers_in_line = [board[square] for square in line]
+    center = 5
 
     if markers_in_line.count(CPU_MARKER) == 2:
         for square in line:
@@ -109,8 +116,8 @@ def find_at_risk_square(line, board):
         for square in line:
             if board[square] == INITIAL_MARKER:
                 return square
-    elif board[5] == INITIAL_MARKER:
-        return 5
+    elif board[center] == INITIAL_MARKER:
+        return center
 
     return None
 
