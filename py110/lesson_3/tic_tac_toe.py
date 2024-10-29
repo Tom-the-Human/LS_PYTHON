@@ -17,7 +17,7 @@
 # 5 If it's a winning board, display the winner.
     # 1 print below board
 # 6 If the board is full, display tie.
-    # 1 print below poard
+    # 1 print below board
 # 7 If neither player won and the board is not full, go to #2
 # 8 Play again?
 # 9 If yes, go to #1
@@ -47,9 +47,6 @@
 import os
 import random
 
-INITIAL_MARKER = ' '
-HUMAN_MARKER = 'X'
-CPU_MARKER = 'O'
 WINNING_SCORE = 3
 WINNING_LINES = [
         [1, 2, 3], [4, 5, 6], [7, 8, 9],
@@ -59,6 +56,9 @@ WINNING_LINES = [
 GRAY = '\033[1;30m'
 BOLD = '\033[1m'
 RESET = '\033[0m'
+INITIAL_MARKER = ' '
+HUMAN_MARKER = f'{BOLD}X{RESET}'
+CPU_MARKER = f'{BOLD}O{RESET}'
 
 def prompt(message):
     print(f'<#> {message} <#>')
@@ -82,18 +82,15 @@ def display_board(board, score):
     prompt(f"You are {HUMAN_MARKER}. Computer is {CPU_MARKER}.")
     print('')
     print(f'{GRAY}  1  {RESET}|{GRAY}  2  {RESET}|{GRAY}  3{RESET}')
-    print(f"{BOLD}  {board[1]}  {RESET}|{BOLD}  {board[2]}" +
-          f"  {RESET}|{BOLD}  {board[3]}{RESET}")
+    print(f"  {board[1]}  |  {board[2]}  |  {board[3]}  ")
     print('     |     |')
     print(f'-----+-----+-----      Your score: {score[0]}')
     print(f'{GRAY}  4  {RESET}|{GRAY}  5  {RESET}|{GRAY}  6{RESET}')
-    print(f"{BOLD}  {board[4]}  {RESET}|{BOLD}  {board[5]}" +
-          f"  {RESET}|{BOLD}  {board[6]}{RESET}")
+    print(f"  {board[4]}  |  {board[5]}  |  {board[6]}  ")
     print('     |     |')
     print(f'-----+-----+-----    Computer score: {score[1]}')
     print(f'{GRAY}  7  {RESET}|{GRAY}  8  {RESET}|{GRAY}  9{RESET}')
-    print(f"{BOLD}  {board[7]}  {RESET}|{BOLD}  {board[8]}" +
-          f"  {RESET}|{BOLD}  {board[9]}{RESET}")
+    print(f"  {board[7]}  |  {board[8]}  |  {board[9]}  ")
     print('     |     |')
     print('')
 
@@ -104,19 +101,18 @@ def empty_squares(board):
     return [key for key, value in board.items()
             if value == INITIAL_MARKER]
 
-def find_at_risk_square(line, board):
-    markers_in_line = [board[square] for square in line]
+def find_at_risk_square(board):
     center = 5
 
-    if markers_in_line.count(CPU_MARKER) == 2:
-        for square in line:
-            if board[square] == INITIAL_MARKER:
-                return square
-    elif markers_in_line.count(HUMAN_MARKER) == 2:
-        for square in line:
-            if board[square] == INITIAL_MARKER:
-                return square
-    elif board[center] == INITIAL_MARKER:
+    for marker in [CPU_MARKER, HUMAN_MARKER]:
+        for line in WINNING_LINES:
+            markers_in_line = [board[square] for square in line]
+            if markers_in_line.count(marker) == 2:
+                for square in line:
+                    if board[square] == INITIAL_MARKER:
+                        return square
+
+    if board[center] == INITIAL_MARKER:
         return center
 
     return None
@@ -142,11 +138,7 @@ def computer_chooses_square(board):
     if len(empty_squares(board)) == 0:
         return
 
-    for line in WINNING_LINES:
-        square = find_at_risk_square(line, board)
-        if square:
-            board[square] = CPU_MARKER
-            return
+    square = find_at_risk_square(board)
 
     if not square:
         square = random.choice(empty_squares(board))
@@ -182,36 +174,63 @@ def who_goes_first():
 
     return selection
 
+# def play_round(board, score):
+#     first = who_goes_first()
+#     while first == '1':
+#         display_board(board, score)
+#         prompt('You go first.')
+
+#         player_chooses_square(board)
+#         display_board(board, score)
+#         if someone_won(board) or board_full(board):
+#             break
+
+#         computer_chooses_square(board)
+#         display_board(board, score)
+#         if someone_won(board) or board_full(board):
+#             break
+
+#     while first == '2':
+#         display_board(board, score)
+#         prompt('Computer goes first.')
+
+#         computer_chooses_square(board)
+#         display_board(board, score)
+#         if someone_won(board) or board_full(board):
+#             break
+
+#         player_chooses_square(board)
+#         display_board(board, score)
+#         if someone_won(board) or board_full(board):
+#             break
+
+#     winner = detect_winner(board)
+#     if winner == 'You':
+#         score[0] += 1
+#     elif winner == 'The computer':
+#         score[1] += 1
+
 def play_round(board, score):
     first = who_goes_first()
-    while first == '1':
-        display_board(board, score)
+    turns = [player_chooses_square, computer_chooses_square]
+
+    display_board(board, score)
+
+    if first == '2':
+        turns.reverse()
+        prompt('Computer goes first.')
+    else:
         prompt('You go first.')
 
-        player_chooses_square(board)
-        display_board(board, score)
+    while True:
+        for turn in turns:
+            turn(board)
+            display_board(board, score)
+            if someone_won(board) or board_full(board):
+                break
         if someone_won(board) or board_full(board):
             break
-
-        computer_chooses_square(board)
-        display_board(board, score)
-        if someone_won(board) or board_full(board):
-            break
-
-    while first == '2':
-        display_board(board, score)
-        prompt('Computer goes first.')
-
-        computer_chooses_square(board)
-        display_board(board, score)
-        if someone_won(board) or board_full(board):
-            break
-
-        player_chooses_square(board)
-        display_board(board, score)
-        if someone_won(board) or board_full(board):
-            break
-
+            
     winner = detect_winner(board)
     if winner == 'You':
         score[0] += 1
