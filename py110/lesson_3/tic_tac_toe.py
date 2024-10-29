@@ -101,16 +101,22 @@ def empty_squares(board):
     return [key for key, value in board.items()
             if value == INITIAL_MARKER]
 
+def find_two_in_row(board, marker):
+    for line in WINNING_LINES:
+        markers = [board[square] for square in line]
+        if markers.count(marker) == 2 and INITIAL_MARKER in markers:
+            return line
+        
+    return None
+
 def find_at_risk_square(board):
     center = 5
 
     for marker in [CPU_MARKER, HUMAN_MARKER]:
-        for line in WINNING_LINES:
-            markers_in_line = [board[square] for square in line]
-            if markers_in_line.count(marker) == 2:
-                for square in line:
-                    if board[square] == INITIAL_MARKER:
-                        return square
+        line = find_two_in_row(board, marker)
+        if line:
+            return next((square for square in line if 
+                         board[square] == INITIAL_MARKER), None)
 
     if board[center] == INITIAL_MARKER:
         return center
@@ -173,42 +179,6 @@ def who_goes_first():
         selection = random.choice(['1', '2'])
 
     return selection
-
-# def play_round(board, score):
-#     first = who_goes_first()
-#     while first == '1':
-#         display_board(board, score)
-#         prompt('You go first.')
-
-#         player_chooses_square(board)
-#         display_board(board, score)
-#         if someone_won(board) or board_full(board):
-#             break
-
-#         computer_chooses_square(board)
-#         display_board(board, score)
-#         if someone_won(board) or board_full(board):
-#             break
-
-#     while first == '2':
-#         display_board(board, score)
-#         prompt('Computer goes first.')
-
-#         computer_chooses_square(board)
-#         display_board(board, score)
-#         if someone_won(board) or board_full(board):
-#             break
-
-#         player_chooses_square(board)
-#         display_board(board, score)
-#         if someone_won(board) or board_full(board):
-#             break
-
-#     winner = detect_winner(board)
-#     if winner == 'You':
-#         score[0] += 1
-#     elif winner == 'The computer':
-#         score[1] += 1
 
 def play_round(board, score):
     first = who_goes_first()
