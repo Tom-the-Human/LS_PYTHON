@@ -77,9 +77,10 @@
 # 2 Start a round
 #   - display deck?
 #   - deal animation?
-#   - use set.pop() to remove cards from deck and add same to player hand
+#   - shuffle and remove cards from deck and add same to player hand
 #   - definitely display hands, player and dealer
 #   - display hand values
+#   - use chips (maybe), to control game length
 # 3 Ask player to hit or stay
 #   - if hit, deal player another card
 #       - display hand with new card
@@ -87,7 +88,7 @@
 #       - if bust, player loses
 #   - if stay, stop asking
 # 4 Dealer turn
-#   - if dealer hand > 16 hit, else stay
+#   - if dealer hand < 17 hit, else stay
 #   - display hand with new card
 #   - if bust, player wins
 # 5 Compare hands
@@ -102,6 +103,7 @@
 
 # C
 import random
+import os
 
 BLACK_ON_WHITE = '\033[0;30;47m'
 RED_ON_WHITE = '\033[0;31;47m'
@@ -111,29 +113,188 @@ BOLD = '\033[1m'
 RESET = '\033[0m'
 BOW = BLACK_ON_WHITE
 ROW = RED_ON_WHITE
+NOT_BUSTED = range(22)
+VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
+SUITS = ['♣️', '♠️', '♦️', '♥️']
+RED_SUITS = ['♦️', '♥️']
 
 def prompt(message):
-    print(f'♣️♠️🃏♦️♥️ {message}')
+    print(f'♣️♠️~🃏~♦️♥️ {message}')
+
+def wait():
+    input("(Enter/Return)")
+
+def welcome():
+    os.system('clear')
+    print("The gate opens. You step into a strange dimension.")
+    wait()
+    os.system('clear')
+    input("""
+********************************************************************************
+*                                                                              *
+*                                                                              *
+*                           WELCOME TO HUMAN CA$INO                            *
+*                                                                              *
+*                     ╭──────────────────────────────────╮                     *
+*                     │                                  │                     *
+*                     │         ★ Human Casino ★        │                     *
+*                     │                                  │                     *
+*                     ╰──────────────────────────────────╯                     *
+*                                                                              *
+*                                                                              *
+*                           ╭───────────────────────╮                          *
+*                          ╱                         ╲                         *
+*                         ╱   .---.    .---.          ╲                        *
+*                        ╱   (  @  )  (  @  )          ╲                       *
+*                       │      `-'      `-'            │                       *
+*                       │                              │                       *
+*                       │      ╔════════════╗          │                       *
+*                       │      ║  PLAY NOW  ║          │                       *
+*                       │      ╚V^^^^^^^^^^V╝          │                       *
+*                        ╲_____________________________/                       *
+*                                                                              *
+*                The casino hums with a strange, electric energy...            *
+*                                                                              *
+*        Shadows flicker on the walls, where eerie portraits seem to watch     *
+*         your every move. The air is thick with mystery and anticipation.     *
+*                                                                              *
+*                          What are you waiting for?                           *
+*                                                                              *
+*                       PRESS ENTER TO BEGIN PLAYING                           *
+*                                                                              *
+********************************************************************************
+
+    """)
+    print("A small piece of paper depicting a jester flits into view.")
+    prompt("Welcome to Human Casino, traveler! It's time to play some 21!")
+    prompt("I am your host, friend, fiend, and dealer. I'd tell you my name"
+           " if only I could remember it.")
+    prompt("For now, just call me Dealer. Well, let's get to it!")
+    wait()
 
 def shuffle(deck):
     random.shuffle(deck)
 
-def hit():
-    pass # get a card
+def deal(deck):
+    '''
+    Deals the first round of cards. Use `hit` for additional cards.
+    '''
+    player_hand = []
+    dealer_hand = []
+    
+    for _ in range(2):
+        player_hand.append(deck.pop())
+        dealer_hand.append(deck.pop())
+    
+    return player_hand, dealer_hand
 
-def dealer_turn(dealer_hand):
+def hit(hand, deck):
+    '''
+    Deals a single card during play. Use `deal` when starting the game.
+    '''
+    hand.append(deck.pop())
+
+def bet(chips):
+    prompt(f"You have {chips} in chips.")
+    prompt("How much will you bet?")
+    # 
+
+def calc_hand_total(hand):
+    pass # return sum of cards in hand
+
+def busted(hand):
+    if calc_hand_total(hand) not in NOT_BUSTED:
+        return True
+
+def who_won(dealer_hand, player_hand):
+    # show dealer hole card
+    winner = None
+    if calc_hand_total(player_hand) > calc_hand_total(dealer_hand) \
+        and not busted(player_hand):
+        winner = 'player'
+    elif calc_hand_total(dealer_hand) > calc_hand_total(player_hand) \
+        and not busted(dealer_hand):
+        winner = 'dealer'
+    
+    return winner
+
+def display_result(dealer_hand, player_hand, winner):
+    pass # print winner and hand values
+
+def display_game(dealer_hand, player_hand):
+    pass # string representation of cards, hand totals, maybe more
+    # display card backs for any cards not dealt, and for dealer hole card
+
+def display_rules():
+    pass # print simple rules for the game
+    prompt("""
+           The goal of 21 is to get as close to 21 as possible without
+            going over. Going over 21 is called bust or busted, and means
+            you automatically lose. The player and dealer are each dealt
+            two cards. Both player cards are face up, and the dealer has
+            one card face up and one face down (the hole card). Numbered
+            cards are worth their number value, face cards (King, Queen,
+            and Jack) are worth 10, and A (Ace) is worth either 1 or 11.
+            Ace is worth 11 unless that would cause the hand to bust (go
+            over 21), in which case it is worth 1. After cards are dealt,
+            the player may hit (ask for another card) or stay (end the turn).
+            The player may hit as many times as they like before staying
+            or busting.
+           """)
+
+def play_again():
+    pass # determine whether to run the main game loop again
+    print("If cowardice gets the best of you, "
+          "use (CTRL+D) to flee this strange realm.")
+
+def dealer_turn(dealer_hand, deck):
     while dealer_hand < 17:
+        display_game()
         prompt('The dealer takes a card.')
-        hit()
+        hit(dealer_hand, deck)
 
-def player_turn():
+def player_turn(player_hand, deck, chips):
     while True:
-        player_choice = input('hit or stay')
-        if (player_choice == 'stay') or busted():
+        display_game()
+        prompt(f"You have {chips} in chips.")
+        prompt('Enter "1" to hit, "2" to stay, "3" to see the rules.')
+        player_choice = input().strip()
+
+        if player_choice not in ['1', '2', '3']:
+            prompt("Come on, be a sport! Pick 1, 2, or 3.")
+        if player_choice == '1':
+            prompt('Hit me!')
+            hit(player_hand, deck)
+        if (player_choice == '2') or busted(player_hand):
             break
+        if player_choice == '3':
+            display_rules()
+        wait()
+
 
     if busted():
         pass # loss, maybe ask to replay, lose chips if implemented
+        prompt("Busted! I'll be taking those chips now.")
     else:
         prompt('You chose to stay!')
 
+def main():
+    welcome()
+    chips = '$100'
+    while True:
+        player_hand, dealer_hand = [], []
+        display_game(player_hand, dealer_hand)
+        deck = [
+            [[value, suit] for value in VALUES for suit in SUITS]
+        ]
+        print(deck)
+        shuffle(deck)
+        while True:
+            player_hand, dealer_hand = deal(deck)
+            player_turn(player_hand, deck, chips)
+            dealer_turn(dealer_hand)
+            winner = who_won(dealer_hand, player_hand)
+            display_result(dealer_hand, player_hand, winner)
+            play_again()
+
+main()
