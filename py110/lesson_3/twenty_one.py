@@ -102,6 +102,9 @@
 # Is 11 unless that makes hand bust 21, else 1
 
 # C
+"""
+Get it working without chips, but keep the 'chips feature' in mind. 
+"""
 import random
 import os
 
@@ -137,7 +140,7 @@ def welcome():
 *                                                                              *
 *                     ╭──────────────────────────────────╮                     *
 *                     │                                  │                     *
-*                     │         ★ Human Casino ★        │                     *
+*                     │         ★ Human Casino ★         │                     *
 *                     │                                  │                     *
 *                     ╰──────────────────────────────────╯                     *
 *                                                                              *
@@ -197,16 +200,37 @@ def hit(hand, deck):
 def bet(chips):
     prompt(f"You have {chips} in chips.")
     prompt("How much will you bet?")
-    # 
+    # offer options, from $5 to $100, move chips from the player stack
+    # to the pot. bets pay 1:1, (i.e. winning a 5 chip bet gets your 5
+    # chips back plus 5 more from the dealer
+
+def one_or_eleven(hand_value):
+    if hand_value > 11:
+        return 1
+    else:
+        return 11
 
 def calc_hand_total(hand):
-    pass # return sum of cards in hand
+    hand_value = 0
+    for card in hand:
+        try:
+            hand_value += int(card[0])
+        except ValueError:
+            if card[0] != 'A':
+                hand_value += 10
+            if card[0] == 'A':
+                hand_value += one_or_eleven(hand_value)
+
+    return hand_value
+        
 
 def busted(hand):
     if calc_hand_total(hand) not in NOT_BUSTED:
         return True
+    
+    return False
 
-def who_won(dealer_hand, player_hand):
+def who_won(player_hand, dealer_hand):
     # show dealer hole card
     winner = None
     if calc_hand_total(player_hand) > calc_hand_total(dealer_hand) \
@@ -218,18 +242,25 @@ def who_won(dealer_hand, player_hand):
     
     return winner
 
-def display_result(dealer_hand, player_hand, winner):
-    pass # print winner and hand values
+def display_result(player_hand, dealer_hand, winner):
+    prompt(f"You have {calc_hand_total(player_hand)}.")
+    prompt(f"I have {calc_hand_total(dealer_hand)}.")
+    if winner == 'player':
+        prompt("Hmm ... looks like you beat me this time.")
+    elif winner == 'dealer':
+        prompt("Dealer wins! Everything you've wagered is now mine!")
+    else:
+        prompt("A tie. How dull! New hand! New hand, I say!")
 
-def display_game(dealer_hand, player_hand):
+def display_game(player_hand, dealer_hand):
     pass # string representation of cards, hand totals, maybe more
     # display card backs for any cards not dealt, and for dealer hole card
 
 def display_rules():
     pass # print simple rules for the game
     prompt("""
-           The goal of 21 is to get as close to 21 as possible without
-            going over. Going over 21 is called bust or busted, and means
+            The goal of 21 is to get as close to 21 as possible without
+            going over. Going over 21 is called going bust, and it means
             you automatically lose. The player and dealer are each dealt
             two cards. Both player cards are face up, and the dealer has
             one card face up and one face down (the hole card). Numbered
@@ -237,33 +268,54 @@ def display_rules():
             and Jack) are worth 10, and A (Ace) is worth either 1 or 11.
             Ace is worth 11 unless that would cause the hand to bust (go
             over 21), in which case it is worth 1. After cards are dealt,
-            the player may hit (ask for another card) or stay (end the turn).
+            the player may hit (take another card) or stay (end the turn).
             The player may hit as many times as they like before staying
             or busting.
            """)
 
 def play_again():
-    pass # determine whether to run the main game loop again
-    print("If cowardice gets the best of you, "
-          "use (CTRL+D) to flee this strange realm.")
+    # `if chips:` check when chips implemented
+    # when chips, probably need to change logic
+    prompt("How about another round?")
+    answer = input('"Yes" to continue, "No" to quit.\n').strip().lower()
+    while answer not in ['yes', 'y', 'no', 'n']:
+        prompt("Oh, come now! Wouldn't you like another chance?")
+        answer = input('"Yes" to continue, "No" to quit.\n').strip().lower()
 
-def dealer_turn(dealer_hand, deck):
-    while dealer_hand < 17:
-        display_game()
+    if answer in ['yes', 'y']:
+        return True
+    
+    return False
+
+def dealer_turn(player_hand, dealer_hand, deck):
+    # show dealer hole card
+    while calc_hand_total(dealer_hand) < 17:
+        display_game(player_hand, dealer_hand)
         prompt('The dealer takes a card.')
         hit(dealer_hand, deck)
 
-def player_turn(player_hand, deck, chips):
+    if busted(dealer_hand):
+        prompt("Damnation! Dealer goes bust.")
+    else:
+        prompt("Dealer stays.")
+        
+
+def player_turn(player_hand, dealer_hand, deck):
     while True:
-        display_game()
-        prompt(f"You have {chips} in chips.")
+        display_game(player_hand, dealer_hand)
+        print(player_hand)
+        print(dealer_hand[0])
+        wait()
         prompt('Enter "1" to hit, "2" to stay, "3" to see the rules.')
         player_choice = input().strip()
 
-        if player_choice not in ['1', '2', '3']:
+        while player_choice not in ['1', '2', '3']:
             prompt("Come on, be a sport! Pick 1, 2, or 3.")
+            prompt('Enter "1" to hit, "2" to stay, "3" to see the rules.')
+            player_choice = input().strip()
+
         if player_choice == '1':
-            prompt('Hit me!')
+            print('"Hit me!"')
             hit(player_hand, deck)
         if (player_choice == '2') or busted(player_hand):
             break
@@ -272,29 +324,40 @@ def player_turn(player_hand, deck, chips):
         wait()
 
 
-    if busted():
+    if busted(player_hand):
         pass # loss, maybe ask to replay, lose chips if implemented
-        prompt("Busted! I'll be taking those chips now.")
+        prompt("Busted!") # I'll be taking those chips now.")
     else:
         prompt('You chose to stay!')
 
+def play_hand(deck):
+    # bet()
+    player_hand, dealer_hand = deal(deck)
+    player_turn(player_hand, dealer_hand, deck)#, chips)
+    if busted(player_hand):
+        winner = 'dealer'
+        display_result(player_hand, dealer_hand, winner)
+    else:
+        dealer_turn(player_hand, dealer_hand, deck)#, chips)
+        winner = who_won(player_hand, dealer_hand)
+        display_result(player_hand, dealer_hand, winner)
+
 def main():
     welcome()
-    chips = '$100'
+    # player_chips = 100
+    # dealer_chips = 100
     while True:
+        # pot = 0
         player_hand, dealer_hand = [], []
         display_game(player_hand, dealer_hand)
         deck = [
-            [[value, suit] for value in VALUES for suit in SUITS]
+            [value, suit] for value in VALUES for suit in SUITS
         ]
-        print(deck)
         shuffle(deck)
-        while True:
-            player_hand, dealer_hand = deal(deck)
-            player_turn(player_hand, deck, chips)
-            dealer_turn(dealer_hand)
-            winner = who_won(dealer_hand, player_hand)
-            display_result(dealer_hand, player_hand, winner)
-            play_again()
+
+        play_hand(deck)
+
+        if not play_again():
+            break
 
 main()
