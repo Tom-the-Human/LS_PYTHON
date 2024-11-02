@@ -132,17 +132,17 @@ def welcome():
     print("The gate opens. You step into a strange dimension.")
     wait()
     os.system('clear')
-    input("""
+    input(f"""
 ********************************************************************************
 *                                                                              *
 *                                                                              *
 *                           WELCOME TO HUMAN CA$INO                            *
 *                                                                              *
-*                     ╭──────────────────────────────────╮                     *
-*                     │                                  │                     *
-*                     │         ★ Human Casino ★         │                     *
-*                     │                                  │                     *
-*                     ╰──────────────────────────────────╯                     *
+*                     {BOW}╭──────────────────────────────────╮{RESET}                     *
+*                     {BOW}│                                  │{RESET}                     *
+*                     {BOW}│         ★ Human Casino ★         │{RESET}                     *
+*                     {BOW}│                                  │{RESET}                     *
+*                     {BOW}╰──────────────────────────────────╯{RESET}                     *
 *                                                                              *
 *                                                                              *
 *                           ╭───────────────────────╮                          *
@@ -178,9 +178,23 @@ def welcome():
 def shuffle(deck):
     random.shuffle(deck)
 
+def bet(chips):
+    '''
+    Chips not currently implemented, but would be used to lengthen game.
+    Winning all the dealer's chips would reward a good ending (i.e. dealer
+    reveals who he is, or just turns into a regular joker card or something).
+    Losing all chips would give a bad ending, (i.e. lose soul or have to
+    stay in this weird place forever or something else Twilight Zone-y).
+    '''
+    prompt(f"You have {chips} in chips.")
+    prompt("How much will you bet?")
+    # offer options, from $5 to $100, move chips from the player stack
+    # to the pot. bets pay 1:1, (i.e. winning a 5 chip bet gets your 5
+    # chips back plus 5 more from the dealer
+
 def deal(deck):
     '''
-    Deals the first round of cards. Use `hit` for additional cards.
+    Deals the hands. Use `hit` for additional cards.
     '''
     player_hand = []
     dealer_hand = []
@@ -197,15 +211,8 @@ def hit(hand, deck):
     '''
     hand.append(deck.pop())
 
-def bet(chips):
-    prompt(f"You have {chips} in chips.")
-    prompt("How much will you bet?")
-    # offer options, from $5 to $100, move chips from the player stack
-    # to the pot. bets pay 1:1, (i.e. winning a 5 chip bet gets your 5
-    # chips back plus 5 more from the dealer
-
 def one_or_eleven(hand_value):
-    if hand_value > 11:
+    if hand_value > 10:
         return 1
     else:
         return 11
@@ -233,11 +240,11 @@ def busted(hand):
 def who_won(player_hand, dealer_hand):
     # show dealer hole card
     winner = None
-    if calc_hand_total(player_hand) > calc_hand_total(dealer_hand) \
-        and not busted(player_hand):
+    if (calc_hand_total(player_hand) > calc_hand_total(dealer_hand) \
+        and not busted(player_hand)) or busted(dealer_hand):
         winner = 'player'
-    elif calc_hand_total(dealer_hand) > calc_hand_total(player_hand) \
-        and not busted(dealer_hand):
+    elif (calc_hand_total(dealer_hand) > calc_hand_total(player_hand) \
+        and not busted(dealer_hand)) or busted(player_hand):
         winner = 'dealer'
     
     return winner
@@ -252,9 +259,63 @@ def display_result(player_hand, dealer_hand, winner):
     else:
         prompt("A tie. How dull! New hand! New hand, I say!")
 
+def color_card_face(value, suit):
+    """Return the card face in the appropriate color based on suit."""
+    if suit in RED_SUITS:
+        color = ROW
+    else:
+        color = BOW
+
+    return color
+
+def display_hand(hand):
+    card_top = "╭───────╮"
+    card_upper = "│{}      │"
+    card_middle_10 = "│  {}   │"
+    card_middle_other = "│   {}   │"
+    card_lower = "│      {}│"
+    card_bottom = "╰───────╯"
+
+    face_down_top = "╭───────╮"
+    face_down_middle = f"{BOW}│▒▒▒▒▒▒▒│{RESET}"
+    face_down_bottom = "╰───────╯"
+
+    if len(hand) == 1:
+        hand.append(['▒', '▒']) # dealer hole card
+
+    top_row = "   ".join([color_card_face(card[0], card[1]) + card_top + RESET for card in hand])
+    upper_row = "   ".join([
+        color_card_face(card[0], card[1]) + card_upper.format(card[1]) + RESET if card[1] != '▒' else face_down_middle for card in hand
+    ])
+    middle_row = "   ".join([
+        color_card_face(card[0], card[1]) + card_middle_10.format(card[0]) + RESET if card[0] == '10'
+        else color_card_face(card[0], card[1]) + card_middle_other.format(card[0]) + RESET if card[0] != '▒'
+        else face_down_middle for card in hand
+    ])
+    lower_row = "   ".join([
+        color_card_face(card[0], card[1]) + card_lower.format(card[1]) + RESET if card[1] != '▒' else face_down_middle for card in hand
+    ])
+    bottom_row = "   ".join([color_card_face(card[0], card[1]) + card_bottom + RESET for card in hand])
+
+    print(top_row)
+    print(upper_row)
+    print(middle_row)
+    print(lower_row)
+    print(bottom_row)
+
 def display_game(player_hand, dealer_hand):
-    pass # string representation of cards, hand totals, maybe more
-    # display card backs for any cards not dealt, and for dealer hole card
+    # string representation of cards, hand totals, maybe more
+    # display card back for dealer hole card, add deck?
+    os.system('clear')
+    
+    print("┌──────────────────────────────────────────────────────────────┐")
+    print(f"│                     {BOLD}~ Human Blackjack ~{RESET}                      │")
+    print("└──────────────────────────────────────────────────────────────┘")
+    print(f"      {BOLD}Dealer Hand                 Dealer Showing: {calc_hand_total(dealer_hand)}{RESET}")
+    display_hand(dealer_hand)
+    print(" ")
+    print(f"        {GREEN}Player Hand               Player Total: {calc_hand_total(player_hand)}{RESET}")
+    display_hand(player_hand)
 
 def display_rules():
     pass # print simple rules for the game
@@ -275,7 +336,7 @@ def display_rules():
 
 def play_again():
     # `if chips:` check when chips implemented
-    # when chips, probably need to change logic
+    # when chips implemented, probably need to change logic
     prompt("How about another round?")
     answer = input('"Yes" to continue, "No" to quit.\n').strip().lower()
     while answer not in ['yes', 'y', 'no', 'n']:
@@ -288,11 +349,11 @@ def play_again():
     return False
 
 def dealer_turn(player_hand, dealer_hand, deck):
-    # show dealer hole card
+    display_game(player_hand, dealer_hand)
     while calc_hand_total(dealer_hand) < 17:
-        display_game(player_hand, dealer_hand)
         prompt('The dealer takes a card.')
         hit(dealer_hand, deck)
+        display_game(player_hand, dealer_hand)
 
     if busted(dealer_hand):
         prompt("Damnation! Dealer goes bust.")
@@ -302,10 +363,7 @@ def dealer_turn(player_hand, dealer_hand, deck):
 
 def player_turn(player_hand, dealer_hand, deck):
     while True:
-        display_game(player_hand, dealer_hand)
-        print(player_hand)
-        print(dealer_hand[0])
-        wait()
+        display_game(player_hand, [dealer_hand[0]])
         prompt('Enter "1" to hit, "2" to stay, "3" to see the rules.')
         player_choice = input().strip()
 
@@ -325,7 +383,6 @@ def player_turn(player_hand, dealer_hand, deck):
 
 
     if busted(player_hand):
-        pass # loss, maybe ask to replay, lose chips if implemented
         prompt("Busted!") # I'll be taking those chips now.")
     else:
         prompt('You chose to stay!')
@@ -335,12 +392,13 @@ def play_hand(deck):
     player_hand, dealer_hand = deal(deck)
     player_turn(player_hand, dealer_hand, deck)#, chips)
     if busted(player_hand):
-        winner = 'dealer'
-        display_result(player_hand, dealer_hand, winner)
-    else:
-        dealer_turn(player_hand, dealer_hand, deck)#, chips)
         winner = who_won(player_hand, dealer_hand)
         display_result(player_hand, dealer_hand, winner)
+        return
+
+    dealer_turn(player_hand, dealer_hand, deck)#, chips)
+    winner = who_won(player_hand, dealer_hand)
+    display_result(player_hand, dealer_hand, winner)
 
 def main():
     welcome()
@@ -349,10 +407,10 @@ def main():
     while True:
         # pot = 0
         player_hand, dealer_hand = [], []
-        display_game(player_hand, dealer_hand)
         deck = [
             [value, suit] for value in VALUES for suit in SUITS
         ]
+
         shuffle(deck)
 
         play_hand(deck)
