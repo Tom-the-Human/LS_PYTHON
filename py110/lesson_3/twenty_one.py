@@ -117,12 +117,13 @@ RESET = '\033[0m'
 BOW = BLACK_ON_WHITE
 ROW = RED_ON_WHITE
 NOT_BUSTED = range(22)
+DEALER_STAY = 17
 VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A']
 SUITS = ['♣️', '♠️', '♦️', '♥️']
 RED_SUITS = ['♦️', '♥️']
 
 def prompt(message):
-    print(f'♣️♠️~🃏~♦️♥️ {message}')
+    print(f"♣️♠️'🃏'♦️♥️: {message}")
 
 def wait():
     input("(Enter/Return)")
@@ -180,7 +181,8 @@ def shuffle(deck):
 
 def deal(deck):
     '''
-    Deals the hands. Use `hit` for additional cards.
+    Deals the hands, alternating between player and dealer the way cards
+    are supposed to be dealt. Use `hit` for additional cards.
     '''
     player_hand = []
     dealer_hand = []
@@ -198,7 +200,8 @@ def hit(hand, deck):
     hand.append(deck.pop())
 
 def one_or_eleven(hand_value):
-    if hand_value > 10:
+    twenty_one_minus_eleven = 10
+    if hand_value > twenty_one_minus_eleven:
         return 1
     else:
         return 11
@@ -302,11 +305,11 @@ def display_game(player_hand, dealer_hand):
           "                      │")
     print("└──────────────────────────────────────────────────────────────┘")
     print(f"      {BOLD}Dealer Hand                 " +
-          "Dealer Showing: {hand_total(dealer_hand)}{RESET}")
+          f"Dealer Showing: {hand_total(dealer_hand)}{RESET}")
     display_hand(dealer_hand)
     print(" ")
     print(f"        {GREEN}Player Hand               " +
-          "Player Total: {hand_total(player_hand)}{RESET}")
+          f"Player Total: {hand_total(player_hand)}{RESET}")
     display_hand(player_hand)
 
 def display_rules():
@@ -339,7 +342,7 @@ def play_again():
 
 def dealer_turn(player_hand, dealer_hand, deck):
     display_game(player_hand, dealer_hand)
-    while hand_total(dealer_hand) < 17:
+    while hand_total(dealer_hand) < DEALER_STAY:
         prompt('The dealer takes a card.')
         hit(dealer_hand, deck)
         display_game(player_hand, dealer_hand)
@@ -352,7 +355,8 @@ def dealer_turn(player_hand, dealer_hand, deck):
 
 def player_turn(player_hand, dealer_hand, deck):
     while True:
-        display_game(player_hand, [dealer_hand[0]])
+        display_game(player_hand, [dealer_hand[0]]) 
+        # display only one dealer card before dealer turn ^
         prompt('Enter "1" to hit, "2" to stay, "3" to see the rules.')
         player_choice = input().strip()
 
@@ -377,7 +381,9 @@ def player_turn(player_hand, dealer_hand, deck):
         prompt('You chose to stay!')
 
 def play_hand(deck):
+    shuffle(deck)
     player_hand, dealer_hand = deal(deck)
+
     player_turn(player_hand, dealer_hand, deck)
     if busted(player_hand):
         winner = who_won(player_hand, dealer_hand)
@@ -385,6 +391,7 @@ def play_hand(deck):
         return
 
     dealer_turn(player_hand, dealer_hand, deck)
+    
     winner = who_won(player_hand, dealer_hand)
     display_result(player_hand, dealer_hand, winner)
 
@@ -395,8 +402,6 @@ def main():
         deck = [
             [value, suit] for value in VALUES for suit in SUITS
         ]
-
-        shuffle(deck)
 
         play_hand(deck)
 
