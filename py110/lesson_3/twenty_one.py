@@ -133,39 +133,39 @@ def welcome():
     wait()
     os.system('clear')
     input(f"""
-********************************************************************************
-*                                                                              *
-*                                                                              *
-*                           WELCOME TO HUMAN CA$INO                            *
-*                                                                              *
-*                     {BOW}╭──────────────────────────────────╮{RESET}                     *
-*                     {BOW}│                                  │{RESET}                     *
-*                     {BOW}│         ★ Human Casino ★         │{RESET}                     *
-*                     {BOW}│                                  │{RESET}                     *
-*                     {BOW}╰──────────────────────────────────╯{RESET}                     *
-*                                                                              *
-*                                                                              *
-*                           ╭───────────────────────╮                          *
-*                          ╱                         ╲                         *
-*                         ╱   .---.    .---.          ╲                        *
-*                        ╱   (  @  )  (  @  )          ╲                       *
-*                       │      `-'      `-'            │                       *
-*                       │                              │                       *
-*                       │      ╔════════════╗          │                       *
-*                       │      ║  PLAY NOW  ║          │                       *
-*                       │      ╚V^^^^^^^^^^V╝          │                       *
-*                        ╲_____________________________/                       *
-*                                                                              *
-*                The casino hums with a strange, electric energy...            *
-*                                                                              *
-*        Shadows flicker on the walls, where eerie portraits seem to watch     *
-*         your every move. The air is thick with mystery and anticipation.     *
-*                                                                              *
-*                          What are you waiting for?                           *
-*                                                                              *
-*                       PRESS ENTER TO BEGIN PLAYING                           *
-*                                                                              *
-********************************************************************************
+******************************************************************************
+*                                                                            *
+*                                                                            *
+*                          WELCOME TO HUMAN CA$INO                           *
+*                                                                            *
+*                    ╭──────────────────────────────────╮                    *
+*                    │                                  │                    *
+*                    │         ★ Human Casino ★        │                    *
+*                    │                                  │                    *
+*                    ╰──────────────────────────────────╯                    *
+*                                                                            *
+*                                                                            *
+*                          ╭───────────────────────╮                         *
+*                         ╱                         ╲                        *
+*                        ╱   .---.    .---.          ╲                       *
+*                       ╱   (  @  )  (  @  )          ╲                      *
+*                      │      `-'      `-'            │                      *
+*                      │                              │                      *
+*                      │      ╔════════════╗          │                      *
+*                      │      ║  PLAY NOW  ║          │                      *
+*                      │      ╚V^^^^^^^^^^V╝          │                      *
+*                       ╲_____________________________/                      *
+*                                                                            *
+*               The casino hums with a strange, electric energy...           *
+*                                                                            *
+*       Shadows flicker on the walls, where eerie portraits seem to watch    *
+*        your every move. The air is thick with mystery and anticipation.    *
+*                                                                            *
+*                         What are you waiting for?                          *
+*                                                                            *
+*                      PRESS ENTER TO BEGIN PLAYING                          *
+*                                                                            *
+******************************************************************************
 
     """)
     print("A small piece of paper depicting a jester flits into view.")
@@ -177,20 +177,6 @@ def welcome():
 
 def shuffle(deck):
     random.shuffle(deck)
-
-def bet(chips):
-    '''
-    Chips not currently implemented, but would be used to lengthen game.
-    Winning all the dealer's chips would reward a good ending (i.e. dealer
-    reveals who he is, or just turns into a regular joker card or something).
-    Losing all chips would give a bad ending, (i.e. lose soul or have to
-    stay in this weird place forever or something else Twilight Zone-y).
-    '''
-    prompt(f"You have {chips} in chips.")
-    prompt("How much will you bet?")
-    # offer options, from $5 to $100, move chips from the player stack
-    # to the pot. bets pay 1:1, (i.e. winning a 5 chip bet gets your 5
-    # chips back plus 5 more from the dealer
 
 def deal(deck):
     '''
@@ -217,7 +203,7 @@ def one_or_eleven(hand_value):
     else:
         return 11
 
-def calc_hand_total(hand):
+def hand_total(hand):
     hand_value = 0
     for card in hand:
         try:
@@ -232,26 +218,25 @@ def calc_hand_total(hand):
         
 
 def busted(hand):
-    if calc_hand_total(hand) not in NOT_BUSTED:
+    if hand_total(hand) not in NOT_BUSTED:
         return True
     
     return False
 
 def who_won(player_hand, dealer_hand):
-    # show dealer hole card
     winner = None
-    if (calc_hand_total(player_hand) > calc_hand_total(dealer_hand) \
+    if (hand_total(player_hand) > hand_total(dealer_hand) \
         and not busted(player_hand)) or busted(dealer_hand):
         winner = 'player'
-    elif (calc_hand_total(dealer_hand) > calc_hand_total(player_hand) \
+    elif (hand_total(dealer_hand) > hand_total(player_hand) \
         and not busted(dealer_hand)) or busted(player_hand):
         winner = 'dealer'
     
     return winner
 
 def display_result(player_hand, dealer_hand, winner):
-    prompt(f"You have {calc_hand_total(player_hand)}.")
-    prompt(f"I have {calc_hand_total(dealer_hand)}.")
+    prompt(f"You have {hand_total(player_hand)}.")
+    prompt(f"I have {hand_total(dealer_hand)}.")
     if winner == 'player':
         prompt("Hmm ... looks like you beat me this time.")
     elif winner == 'dealer':
@@ -269,33 +254,39 @@ def color_card_face(value, suit):
     return color
 
 def display_hand(hand):
-    card_top = "╭───────╮"
-    card_upper = "│{}      │"
-    card_middle_10 = "│  {}   │"
-    card_middle_other = "│   {}   │"
-    card_lower = "│      {}│"
-    card_bottom = "╰───────╯"
+    card_top = "╭──────╮"
+    card_upper = "│{}     │"
+    card_middle_10 = "│  {}  │"
+    card_middle_other = "│  {}   │"
+    card_lower = "│     {}│"
+    card_bottom = "╰──────╯"
 
-    face_down_top = "╭───────╮"
-    face_down_middle = f"{BOW}│▒▒▒▒▒▒▒│{RESET}"
-    face_down_bottom = "╰───────╯"
+    face_down_top = "╭──────╮"
+    face_down_middle = f"{BOW}│▒▒▒▒▒▒│{RESET}"
+    face_down_bottom = "╰──────╯"
 
     if len(hand) == 1:
         hand.append(['▒', '▒']) # dealer hole card
 
-    top_row = "   ".join([color_card_face(card[0], card[1]) + card_top + RESET for card in hand])
+    top_row = "   ".join([color_card_face(card[0], card[1]) +
+                           card_top + RESET for card in hand])
     upper_row = "   ".join([
-        color_card_face(card[0], card[1]) + card_upper.format(card[1]) + RESET if card[1] != '▒' else face_down_middle for card in hand
+        color_card_face(card[0], card[1]) + card_upper.format(card[1]) +
+          RESET if card[1] != '▒' else face_down_middle for card in hand
     ])
     middle_row = "   ".join([
-        color_card_face(card[0], card[1]) + card_middle_10.format(card[0]) + RESET if card[0] == '10'
-        else color_card_face(card[0], card[1]) + card_middle_other.format(card[0]) + RESET if card[0] != '▒'
+        color_card_face(card[0], card[1]) + card_middle_10.format(card[0]) +
+          RESET if card[0] == '10'
+        else color_card_face(card[0], card[1]) +
+          card_middle_other.format(card[0]) + RESET if card[0] != '▒'
         else face_down_middle for card in hand
     ])
     lower_row = "   ".join([
-        color_card_face(card[0], card[1]) + card_lower.format(card[1]) + RESET if card[1] != '▒' else face_down_middle for card in hand
+        color_card_face(card[0], card[1]) + card_lower.format(card[1]) +
+          RESET if card[1] != '▒' else face_down_middle for card in hand
     ])
-    bottom_row = "   ".join([color_card_face(card[0], card[1]) + card_bottom + RESET for card in hand])
+    bottom_row = "   ".join([color_card_face(card[0], card[1]) +
+                              card_bottom + RESET for card in hand])
 
     print(top_row)
     print(upper_row)
@@ -304,21 +295,21 @@ def display_hand(hand):
     print(bottom_row)
 
 def display_game(player_hand, dealer_hand):
-    # string representation of cards, hand totals, maybe more
-    # display card back for dealer hole card, add deck?
     os.system('clear')
     
     print("┌──────────────────────────────────────────────────────────────┐")
-    print(f"│                     {BOLD}~ Human Blackjack ~{RESET}                      │")
+    print(f"│                     {BOLD}~ Human Blackjack ~{RESET}" +
+          "                      │")
     print("└──────────────────────────────────────────────────────────────┘")
-    print(f"      {BOLD}Dealer Hand                 Dealer Showing: {calc_hand_total(dealer_hand)}{RESET}")
+    print(f"      {BOLD}Dealer Hand                 " +
+          "Dealer Showing: {hand_total(dealer_hand)}{RESET}")
     display_hand(dealer_hand)
     print(" ")
-    print(f"        {GREEN}Player Hand               Player Total: {calc_hand_total(player_hand)}{RESET}")
+    print(f"        {GREEN}Player Hand               " +
+          "Player Total: {hand_total(player_hand)}{RESET}")
     display_hand(player_hand)
 
 def display_rules():
-    pass # print simple rules for the game
     prompt("""
             The goal of 21 is to get as close to 21 as possible without
             going over. Going over 21 is called going bust, and it means
@@ -335,8 +326,6 @@ def display_rules():
            """)
 
 def play_again():
-    # `if chips:` check when chips implemented
-    # when chips implemented, probably need to change logic
     prompt("How about another round?")
     answer = input('"Yes" to continue, "No" to quit.\n').strip().lower()
     while answer not in ['yes', 'y', 'no', 'n']:
@@ -350,7 +339,7 @@ def play_again():
 
 def dealer_turn(player_hand, dealer_hand, deck):
     display_game(player_hand, dealer_hand)
-    while calc_hand_total(dealer_hand) < 17:
+    while hand_total(dealer_hand) < 17:
         prompt('The dealer takes a card.')
         hit(dealer_hand, deck)
         display_game(player_hand, dealer_hand)
@@ -383,29 +372,25 @@ def player_turn(player_hand, dealer_hand, deck):
 
 
     if busted(player_hand):
-        prompt("Busted!") # I'll be taking those chips now.")
+        prompt("Busted!")
     else:
         prompt('You chose to stay!')
 
 def play_hand(deck):
-    # bet()
     player_hand, dealer_hand = deal(deck)
-    player_turn(player_hand, dealer_hand, deck)#, chips)
+    player_turn(player_hand, dealer_hand, deck)
     if busted(player_hand):
         winner = who_won(player_hand, dealer_hand)
         display_result(player_hand, dealer_hand, winner)
         return
 
-    dealer_turn(player_hand, dealer_hand, deck)#, chips)
+    dealer_turn(player_hand, dealer_hand, deck)
     winner = who_won(player_hand, dealer_hand)
     display_result(player_hand, dealer_hand, winner)
 
 def main():
     welcome()
-    # player_chips = 100
-    # dealer_chips = 100
     while True:
-        # pot = 0
         player_hand, dealer_hand = [], []
         deck = [
             [value, suit] for value in VALUES for suit in SUITS
