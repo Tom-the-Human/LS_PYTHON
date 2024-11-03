@@ -383,6 +383,7 @@ def player_turn(player_hand, dealer_hand, deck):
 
 
     if busted(player_hand):
+        display_game(player_hand, dealer_hand)
         prompt("Busted!") # I'll be taking those chips now.")
     else:
         prompt('You chose to stay!')
