@@ -33,7 +33,7 @@ def welcome():
     print("The gate opens. You step into a strange dimension.")
     wait()
     os.system('clear')
-    input(f"""
+    input("""
 ******************************************************************************
 *                                                                            *
 *                                                                            *
@@ -86,11 +86,11 @@ def deal(deck):
     '''
     player_hand = []
     dealer_hand = []
-    
+
     for _ in range(2):
         player_hand.append(deck.pop())
         dealer_hand.append(deck.pop())
-    
+
     return player_hand, dealer_hand
 
 def hit(hand, deck):
@@ -100,11 +100,10 @@ def hit(hand, deck):
     hand.append(deck.pop())
 
 def one_or_eleven(hand_value):
-    twenty_one_minus_eleven = 10
-    if hand_value > twenty_one_minus_eleven:
-        return 1
-    else:
+    if hand_value + 11 in NOT_BUSTED:
         return 11
+
+    return 1
 
 def hand_total(hand):
     '''
@@ -121,12 +120,11 @@ def hand_total(hand):
                 hand_value += one_or_eleven(hand_value)
 
     return hand_value
-        
 
 def busted(hand):
     if hand_total(hand) not in NOT_BUSTED:
         return True
-    
+
     return False
 
 def who_won(player_hand, dealer_hand):
@@ -137,7 +135,7 @@ def who_won(player_hand, dealer_hand):
     elif (hand_total(dealer_hand) > hand_total(player_hand) \
         and not busted(dealer_hand)) or busted(player_hand):
         winner = 'dealer'
-    
+
     return winner
 
 def display_result(player_hand, dealer_hand, winner):
@@ -200,7 +198,7 @@ def display_hand(hand):
 
 def display_game(player_hand, dealer_hand):
     os.system('clear')
-    
+
     print("┌──────────────────────────────────────────────────────────────┐")
     print(f"│                     {BOLD}~ Human Blackjack ~{RESET}" +
           "                      │")
@@ -238,7 +236,7 @@ def play_again():
 
     if answer in ['yes', 'y']:
         return True
-    
+
     return False
 
 def dealer_turn(player_hand, dealer_hand, deck):
@@ -252,11 +250,10 @@ def dealer_turn(player_hand, dealer_hand, deck):
         prompt("Damnation! Dealer goes bust.")
     else:
         prompt("Dealer stays.")
-        
 
 def player_turn(player_hand, dealer_hand, deck):
     while True:
-        display_game(player_hand, [dealer_hand[0]]) 
+        display_game(player_hand, [dealer_hand[0]])
         # display only one dealer card before dealer turn ^
         prompt('Enter "1" to hit, "2" to stay, "3" to see the rules.')
         player_choice = input().strip()
@@ -269,6 +266,7 @@ def player_turn(player_hand, dealer_hand, deck):
         if player_choice == '1':
             print('"Hit me!"')
             hit(player_hand, deck)
+            display_game(player_hand, dealer_hand)
         if (player_choice == '2') or busted(player_hand):
             break
         if player_choice == '3':
@@ -299,7 +297,6 @@ def play_hand(deck):
 def main():
     welcome()
     while True:
-        player_hand, dealer_hand = [], []
         deck = [
             [value, suit] for value in VALUES for suit in SUITS
         ]
