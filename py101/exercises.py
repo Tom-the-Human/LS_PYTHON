@@ -337,5 +337,5 @@ def get_grade(score1, score2, score3):
 
     return grade
 
-print(get_grade(95, 90, 93) == "A")      # True
-print(get_grade(50, 50, 95) == "D")      # True
+# print(get_grade(95, 90, 93) == "A")      # True
+# print(get_grade(50, 50, 95) == "D")      # True
