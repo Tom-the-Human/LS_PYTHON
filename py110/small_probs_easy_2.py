@@ -196,6 +196,7 @@ def find_dup(input_list):
 #               ]) == 73)       # True
 
 
+# 5
 # P
 # Write a function that combines two lists passed as arguments and returns a
 #  new list that contains all elements from both list arguments, with each
@@ -223,7 +224,222 @@ def interleave(list1, list2):
     return [item for pair in zip(list1, list2) for item in pair]
 
 
-list1 = [1, 2, 3]
-list2 = ['a', 'b', 'c']
-expected = [1, "a", 2, "b", 3, "c"]
-print(interleave(list1, list2) == expected)      # True
+# list1 = [1, 2, 3]
+# list2 = ['a', 'b', 'c']
+# expected = [1, "a", 2, "b", 3, "c"]
+# print(interleave(list1, list2) == expected)      # True
+
+
+# 6
+# P
+# Write a function that takes a list of positive integers as input, multiplies
+#  all of the integers together, divides the result by the number of entries
+#  in the list, and returns the result as a string with the value rounded to
+#  three decimal places.
+# 1 take a list of positive integers
+# 2 multiply all the ints together
+# 3 divide the product by the number of ints (length of the list)
+# 4 return the result as a string with the value rounded to
+#  three decimal places
+# Implicitly
+# 1 String coercion is necessary
+# 2 Rounding may be necessary - probably can do with a formatted string?
+
+# E
+# In code. No surprises really, just all low numbers. One example is 4 "1"s.
+# That returns "0.250", which is of course 1/4.
+
+# D
+# Just the list
+
+# A
+# 1 Take a list of ints.
+# 2 Init product variable to 1
+# 3 for int in list, product *= int
+# 4 result = product / len(list)
+# 5 format result as string w 3 decimals
+#   - f-string? look up syntax
+# 6 return result
+
+# C
+def multiplicative_average(input_list):
+    product = 1
+    for num in input_list:
+        product *= num
+    
+    result = product / len(input_list)
+
+    return f"{result:.3f}"
+
+# All of these examples should print True
+# print(multiplicative_average([3, 5]) == "7.500")
+# print(multiplicative_average([2, 5, 8]) == "26.667")
+# print(multiplicative_average([2, 5]) == "5.000")
+# print(multiplicative_average([1, 1, 1, 1]) == "0.250")
+# print(multiplicative_average([2, 5, 7, 11, 13, 17]) == "28361.667")
+
+
+# 7
+# P
+# Write a function that takes two list arguments, each containing a list of
+#  numbers, and returns a new list that contains the product of each pair of
+#  numbers from the arguments that have the same index. You may assume that
+#  the arguments contain the same number of elements.
+# 1 take 2 lists of numbers as arguments
+# 2 multiply the numbers at the same index in each list,
+#  i.e. list1[0] * list2[0], etc
+# 3 return a new list of the products i.e. list3[0] for the above
+
+# E
+# In code. Only 1 test and no new info.
+
+# D
+# so much list
+
+# A
+# 1 take 2 lists
+# 1.5 init new list
+# 2 for each num in list1, multiply it by the num at the same index in list 2
+# 3 for each multiplication, store the result in new list 
+#   - this can all be accomplished with an enumerated for loop
+#   - list3.append(list1[i] * list2[i])
+# 4 return new list
+
+# C
+def multiply_list(list1, list2):
+    list3 = []
+    for i, _ in enumerate(list1):
+        list3.append(list1[i] * list2[i])
+
+    return list3
+
+
+# list1 = [3, 5, 7]
+# list2 = [9, 10, 11]
+# print(multiply_list(list1, list2) == [27, 50, 77])  # True
+
+
+# 8
+# P
+# Write a function that takes one argument, a positive integer,
+#  and returns a list of the digits in the number.
+# 1 take an int argument
+# 2 return a list of the digits in the number
+
+# E
+# Tests show that all digits should be included even if they are duplicates.
+# For example, 444 = [4, 4, 4]
+# Also, the digits remain in the same order they had in the input int
+# I.e. 12345 = [1, 2, 3, 4, 5]
+
+# D
+# some more lists
+
+# A
+# 1 take int argument
+# 2 init an empty list
+# 3 split int into individual digits
+#   - at least a couple ways to do this
+#   - one way would be to coerce to string then use for loop with indexing to
+#        extract chars to list, and coerce those back to ints
+#   - another is to use modulo 10 and take the modulus
+#        until it doesn't divide anymore
+# 4 assign ints to new list in order they first appeared, so if using modulo
+#       insert the digits at index 0 instead of appending
+# 5 retunr list
+
+# C
+def digit_list(number):
+    num_list = []
+    # while number:
+    #     digit = number % 10
+    #     num_list.insert(0, digit)
+    #     number = int(number // 10)
+
+    numstr = str(number)
+    for digit in numstr:
+        num_list.append(int(digit))
+
+    return num_list
+
+# print(digit_list(12345) == [1, 2, 3, 4, 5])       # True
+# print(digit_list(7) == [7])                       # True
+# print(digit_list(375290) == [3, 7, 5, 2, 9, 0])   # True
+# print(digit_list(444) == [4, 4, 4])               # True
+
+
+# 9
+# P
+# Write a function that counts the number of occurrences of each element in a
+#  given list. Once counted, print each element alongside the number of
+#  occurrences. Consider the words case sensitive e.g. ("suv" != "SUV").
+# 1 take a list argument
+# 2 for each unique element print a count of the number of occurences
+# 3 words are case sensitive
+
+# E
+# Only one test, shows a list of all strings as input. Output is
+#   strings formatted like "car => 4". Might be tricky to work out how to
+#   get this ouput, but perhaps I can imbed a comprehension in an f-string?
+# No, I just need to PRINT it, not return it. But yes, f-strings of course.
+# Or might just need a helper function.
+# Nah bro, this is what dicts are for.
+
+# D
+# Lists! Again! OH! And a dictionary!
+
+# A
+# 1 take a list argument
+# 2 init an empty dict
+# 3 for each element in the list, add the element as a dict key and increment
+#   int value as the count. i.e. {'car': 1}, {'truck': 1}, {'car': 2}, etc
+#   - might need to break this down further. not sure if can be done at once
+# 4 once complete, format & print as shown, with 4 print lines
+
+# C
+# def count_occurrences(vehicles):
+#     vehicle_count = {}
+
+#     for vehicle in vehicles:
+#         vehicle_count[vehicle.lower()] = vehicle_count.get(vehicle.lower(), 0) + 1
+
+#     for vehicle in vehicle_count:
+#         print(f"{vehicle} => {vehicle_count[vehicle]}")
+
+# vehicles = ['car', 'car', 'truck', 'car', 'SUV', 'truck',
+#             'motorcycle', 'motorcycle', 'car', 'truck', 'suv']
+# # added 'suv' to test case insensitivity
+
+# count_occurrences(vehicles)
+
+
+# 10
+# P
+# Write a function that takes one argument, a list of integers, and returns
+#  the average of all the integers in the list, rounded down to the integer
+#  component of the average. The list will never be empty, and the numbers
+#  will always be positive integers.
+# 1 take a list of ints
+# 2 return the average of all the integers in the list,
+#    rounded down to the integer component of the average (???)
+
+# E
+# Tests in code. List contains 1 or more positive ints.
+
+# D
+# # Lists. 
+
+# A
+# I'm unsure what "integer component of the average" means exactly.
+# But I will take a whack at it.
+# 1 take list of ints argument
+# 2 assign the sum of the ints to a variable
+# 3 divide the sum by the number of ints
+# 4 round down the result to nearest int
+def average(int_list):
+    return sum(int_list) // len(int_list)
+
+
+# print(average([1, 5, 87, 45, 8, 8]) == 25)        # True
+# print(average([9, 47, 23, 95, 16, 52]) == 40)     # True
+# print(average([7]) == 7)                          # True
