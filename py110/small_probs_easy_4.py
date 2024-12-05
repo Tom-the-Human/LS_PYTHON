@@ -397,7 +397,7 @@ def is_item_available(id, transactions):
             available += action["quantity"]
         else:
             available -= action["quantity"]
-    print(available)
+            
     return available > 0
 
 
