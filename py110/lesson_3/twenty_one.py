@@ -1,6 +1,6 @@
 """
 Twenty-One game with some bonus features. Instead of a best-of-5 feature,
-I planned to implement chips instead and elaborate on the spoopy/Twilight Zone
+I planned to implement chips and to elaborate on the spoopy/Twilight Zone
 "flavor". I may implement these things later, but got it to a state that I
 am happy with for now and feel that I need to keep moving forward. I deleted
 the code and comments relating to chips, but left the flavor/atmosphere alone.
@@ -266,7 +266,7 @@ def player_turn(player_hand, dealer_hand, deck):
         if player_choice == '1':
             print('"Hit me!"')
             hit(player_hand, deck)
-            display_game(player_hand, dealer_hand)
+            display_game(player_hand, [dealer_hand[0]])
         if (player_choice == '2') or busted(player_hand):
             break
         if player_choice == '3':
