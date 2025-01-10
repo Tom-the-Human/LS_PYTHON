@@ -142,6 +142,7 @@ str_list = ['a', 'boot', 'can', 'destroy', 'even', 'fifty', 'guys']
 print([string.capitalize() for string in str_list 
        if string[0].lower() in 'aeiou'])
 
+print
 """
 3. Given two lists of equal length, create a list of tuples where each tuple
  contains the product of the corresponding elements from both lists.

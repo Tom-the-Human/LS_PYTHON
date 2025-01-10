@@ -417,8 +417,7 @@ I read that to check for primeness I can try dividing it by every number
 from 2 up to the square root of the number. Sounds like a plan.
 
 - create a list of the numbers from 2 to the square root of the number (incl)
-    - can be done with range and using `math.sqrt` though I'm unsure if that
-        is considered using an add-on package, which is prohibited.
+    - can be done with range and using `math.sqrt` 
 - if the result of dividing the number by any number in the list results
     in an int, return False
 - if the number is 1 or less, return False

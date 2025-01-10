@@ -261,30 +261,469 @@ A
 
 - sort dict by key before returning       
 """
-def get_char_count(string):
-    char_count = {}
+# def get_char_count(string):
+#     char_count = {}
 
-    while string:
-        char = string[0]
-        if not char.isalnum():
-            string = string.replace(char, '')
-            continue
+#     while string:
+#         char = string[0]
+#         if not char.isalnum():
+#             string = string.replace(char, '')
+#             continue
 
-        counter = string.count(char)
+#         counter = string.count(char)
 
-        if counter not in char_count.keys():
-            char_count[counter] = [char.lower()]
-        elif counter in char_count.keys():
-            char_count[counter].append(char.lower())
-            char_count[counter].sort()
-        string = string.replace(char, '')
+#         if counter not in char_count.keys():
+#             char_count[counter] = [char.lower()]
+#         elif counter in char_count.keys():
+#             char_count[counter].append(char.lower())
+#             char_count[counter].sort()
+#         string = string.replace(char, '')
 
-    return {key: char_count[key] for key in
-            sorted(char_count.keys(), reverse=True)}
+#     return {key: char_count[key] for key in
+#             sorted(char_count.keys(), reverse=True)}
 
 
-print(get_char_count("Mississippi")) # should return {4: ['i', 's'], 2: ['p'], 1: ['m']}
-print(get_char_count("Hello. Hello? HELLO!!")) # should return {6: ['l'], 3: ['e', 'h', 'o']}
-print(get_char_count("aaa...bb...c!")) # should return {3: ['a'], 2: ['b'], 1: ['c']}
-print(get_char_count("aaabbbccc")) # should return {3: ['a', 'b', 'c']}
-print(get_char_count("abc123")) # should return {1: ['1', '2', '3', 'a', 'b', 'c']}
+# print(get_char_count("Mississippi")) # should return {4: ['i', 's'], 2: ['p'], 1: ['m']}
+# print(get_char_count("Hello. Hello? HELLO!!")) # should return {6: ['l'], 3: ['e', 'h', 'o']}
+# print(get_char_count("aaa...bb...c!")) # should return {3: ['a'], 2: ['b'], 1: ['c']}
+# print(get_char_count("aaabbbccc")) # should return {3: ['a', 'b', 'c']}
+# print(get_char_count("abc123")) # should return {1: ['1', '2', '3', 'a', 'b', 'c']}
+
+"""
+P
+1
+Write a function that takes a list of words as input and returns a list of
+integers. Each integer represents the count of letters in the word that occupy
+their positions in the alphabet.
+
+1 take a list of words arg
+2 return a list of ints
+3 each int represents the count of letters in the word that occupy their
+    positions in the alphabet
+
+E
+Literally if "a" is at index 0 in the word, that counts, "b" at idx 2, etc
+
+D
+List of strings input
+List of ints output
+String to hold alphabet
+
+A
+- init alphabet string
+- init counter = 0
+- init matches = []
+
+- check each word against the alphabet and count element @ index matches
+    for word in words:
+        for idx, char in word:
+            if char.casefold() == alphabet[idx]:
+                counter += 1
+        matches.append(counter)
+        counter = 0
+
+- after checking each word, append the counter to matches
+
+- reset the counter before checking the next word
+
+- return matches
+
+C
+"""
+
+# def solve(words):
+#     alphabet = 'abcdefghijklmnopqrstuvwxyz'
+#     counter = 0
+#     matches = []
+
+#     for word in words:
+#         for idx, char in enumerate(word):
+#             if char.casefold() == alphabet[idx]:
+#                 counter += 1
+#         matches.append(counter)
+#         counter = 0
+
+#     return matches
+
+# print(solve(["abode","ABc","xyzD"])) # should return [4, 3, 1]
+# print(solve(["abide","ABc","xyz"])) # should return [4, 3, 0]
+
+"""
+P
+You live in the city of Cartesia where all roads are laid out in a perfect grid.
+You arrived ten minutes too early to an appointment, so you decided to take the 
+opportunity to go for a short walk. The city provides its citizens with a Walk 
+Generating App on their phones -- every time you press the button it sends you a 
+list of one-letter strings representing directions to walk 
+(e.g., ['n', 's', 'w', 'e']). You always walk only a single block in a direction,
+and you know it takes you one minute to traverse one city block. 
+Create a function that will return `True` if the walk the app gives you will 
+take you exactly ten minutes (you don't want to be early or late!) and will, of 
+course, return you to your starting point. Return `False` otherwise.
+
+Note: You will always receive a valid list containing a random assortment of 
+direction letters ('n', 's', 'e', or 'w' only). It will never give you an empty 
+list (that's not a walk, that's standing still!).
+
+1 take a list of single char strings representing 4 cardinal directions
+2 return a boolean representing whether the walk takes exactly 10 mins
+3 True ONLY IF ends up back at starting point *** this is the hard part
+
+- long description seems to just be asking for length of list, but examples
+    seem to show otherwise
+
+E
+examples show rule 3
+
+D
+List of strings input
+Boolean output
+Possibly a 2nd list or dict
+- if 'e' for every 'w' and 'n' for every 's', and len(list) == 10, True
+
+A
+check if len(list) == 10:
+    if not, return False
+
+init dict {char: list.count(char) for char in list}
+
+if dict.get('n') == dict.get[s] and dict.get[e] == dict.get[w]:
+    return True
+
+return False
+
+C
+"""
+# def is_valid_walk(walk):
+#     if len(walk) != 10:
+#         return False
+    
+#     directions = {dir: walk.count(dir) for dir in walk}
+    
+#     if directions.get('n') == directions.get('s') and\
+#         directions.get('w') == directions.get('e'):
+#         return True
+    
+#     return False
+
+# print(is_valid_walk(['n','s','n','s','n','s','n','s','n','s'])) # should return True
+# print(is_valid_walk(['w','e','w','e','w','e','w','e','w','e','w','e'])) # should return False
+# print(is_valid_walk(['w'])) # should return False
+# print(is_valid_walk(['n','n','n','s','n','s','n','s','n','s'])) # should return False
+
+
+"""
+P
+Write a function, persistence, that takes in a positive parameter
+`num` and returns its multiplicative persistence, which is the number
+of times you must multiply the digits in `num` until you reach a single digit.
+
+1 take a positive int arg `num`
+2 return the number of times you must multiple the digits in `num` until you
+    reach a single digit (???) (examples clarify)
+
+E
+Makes sense now - 39 == 3 * 9 == 27 == 2 * 7 == 14 == 1 * 4 == 4,
+so we need to do 3 multiplications to get to a single digit number
+
+D
+Int input
+Int output
+Will use a list, probably also string coercion (could do with math, though)
+
+A
+break the argument into single digits
+    coerce to string
+    coerce to list
+    coere to int
+
+multiply the digits together
+    persistence = 0
+    product = 1
+    while True:
+        for digit in list:
+            product *= digit
+            persistence += 1
+        if len(str(product)) == 1:
+            return persistence
+
+return persistence when len(str(product)) is 1
+
+"""
+# def persistence(num):
+#     num = [int(n) for n in list(str(num))]
+#     if len(num) == 1:
+#         return 0
+
+#     persistence = 0
+#     while True:
+#         product = 1
+#         for digit in num:
+#             product *= digit
+
+#         persistence += 1
+#         num = [int(n) for n in list(str(product))]
+
+#         if len(str(product)) == 1:
+#             return persistence
+
+# print(persistence(39)) # should return 3, because 3*9=27, 2*7=14, 1*4=4
+# # and 4 has only one digit
+# print(persistence(999)) # should return 4, because 9*9*9=729, 7*2*9=126,
+# # 1*2*6=12, and finally 1*2=2
+# print(persistence(4)) # should return 0, because 4 is already a one-digit number
+# print(persistence(25)) # should return 2, because 2*5=10, and 1*0=0
+
+"""
+P
+Find the highest scoring word in a string.
+Each letter scores points based on its position in the alphabet: 
+a = 1, b = 2, c = 3, ... z = 26.
+Return the highest scoring word. If two words score the same, 
+return the word that appears earliest in the string.
+
+1 take string arg
+2 find highest scoring word in string, based on position in alphabet
+3 return highest scoring word
+4 if 2 words score same, return one appearing first in string
+
+E
+
+D
+String input
+String output
+List of words, prob nested list of chars
+
+A
+init alphabet
+
+split the string into words
+init dict of words {word: 0 for word in words}
+split the words into chars
+
+for word in words:
+    score = 0
+    for char in word:
+        score += 1 + alphabet.find(char)
+    dict[word] = score
+
+score the chars to get score for word
+update dict with score for word
+
+return dict[max(dict)]
+
+
+C
+
+*** Got a working solution, but took over 20 minutes and had to consult notes
+multiple times as well as ask LSBot how to return the key associated with the 
+highest value. Poor performance. ***
+"""
+
+# def high(string):
+#     alphabet = 'abcdefghijklmnopqrstuvwxyz'
+
+#     words = string.split()
+#     word_dict = {word: 0 for word in words}
+#     words = [list(word) for word in words]
+
+#     for word in words:
+#         score = 0
+#         for char in word:
+#             score += 1 + alphabet.find(char)
+#         word_dict[''.join(word)] = score
+
+#     return max(word_dict, key=word_dict.get)
+
+# print(high('man i need a taxi up to ubud') == 'taxi')
+# print(high('what time are we climbing up the volcano') == 'volcano')
+# print(high('take me to semynak') == 'semynak')
+# print(high('aaa b') == 'aaa')
+
+
+"""
+P
+# Mothers arranged a dance party for the children in school. At that party,
+# there are only mothers and their children. All are having great fun on the
+# dance floor when suddenly all the lights went out. It's a dark night and no
+# one can see each other. But you were flying nearby and you can see in the
+# dark and have ability to teleport people anywhere you want.
+# Legend:
+# - Uppercase letters stands for mothers, lowercase stand for their children,
+# i.e. "A" mother's children are "aaaa".
+# - Function input: String contains only letters, uppercase letters are unique.
+
+1 take string arg
+2 rearrange the letters so that a given capital letter is followed by all the 
+    lowercase instances of the same letter, for all letters
+3 return the updated string
+
+E
+it appears the capital letters must first be sorted alphabetically
+
+D
+String input
+String output
+Might use a list of individual letters for easier sorting
+
+A
+chars = list(string)
+
+chars.sort() will get us most of the way there
+
+for idx, char1 in enumerate(chars):
+    if char1.isupper():
+        for char2 in chars:
+            if char2.islower() and char2 == char1.lower():
+                chars.intert()
+                
+FAILED: made a spaghetti plate and then turned to ChatGPT for help.
+That's where the neat solution with the lambda came from.
+From this, I learned that `sorted()` coerces its iterable argument to a list,
+and that the `key=` keyword, along with `lambda` is ideal for custom sorting.
+Actually, I already knew than 2nd part, I guess I just learned a little about
+identifying appropriate times to use it.
+"""
+
+# def find_children(dance_floor):
+#     # return ''.join(sorted(dance_floor, 
+#     #           key=lambda char: (char.casefold(), char.islower())))
+#     print(dance_floor)
+#     print(sorted(dance_floor, 
+#               key=lambda char: (char.casefold(), char.islower())))
+
+# print(find_children("abBA") == "AaBb")
+# print(find_children("AaaaaZazzz") == "AaaaaaZzzz")
+# print(find_children("CbcBcbaA") == "AaBbbCcc")
+# print(find_children("xXfuUuuF") == "FfUuuuXx")
+# print(find_children("") == "")
+
+"""
+Sort the list so that shorter words come first. Use a lambda.
+"""
+# words = ["apple", "cat", "banana", "dog", "elephant"]
+
+# words = sorted(words, key=lambda word: len(word))
+
+# print(words)
+
+"""
+Sort the list by their absolute values (e.g., treat -10 as 10).
+"""
+# numbers = [-10, 15, -20, 5, 0, -5]
+# numbers = sorted(numbers, key=lambda num: abs(num))
+# print(numbers)
+
+'''
+Find the sublist with the largest last number.
+'''
+# nested = [[1, 5, 3], [10, 4, 2], [6, 8, 7]]
+# highest_last = max(nested, key=lambda sub: sub[-1])
+# # nested.sort(key=lambda sub: sub[-1], reverse=True)
+
+# print(highest_last)
+
+'''
+Goal: Sort the students by:
+
+1-Grade (higher grades come first).
+2-If grades are the same, sort by age (younger students come first).
+3-If grades and ages are the same, sort by name alphabetically.
+
+'''
+# students = [
+#     ("Alice", 90, 20),
+#     ("Bob", 85, 20),
+#     ("Charlie", 90, 19),
+#     ("Diana", 85, 20),
+#     ("Eve", 90, 22),
+# ]
+
+# students.sort(key=lambda student: (student[1], -student[2], student[0]), reverse=True)
+# print(students)
+
+"""
+Write a function that, given a string of text, returns a list of the top-3 most
+occurring words, in descending order of the number of occurrences.
+
+Assumptions:
+- A word is a string of letters (A to Z) optionally containing one or more 
+    apostrophes (').
+- Matches should be case-insensitive.
+- Ties may be broken arbitrarily.
+- If a text contains fewer than three unique words, then either the top-2 or 
+    top-1 words should be returned, or an empty list if a text contains no words.
+
+1 take a string arg
+2 PRINT a list of top 3 most occuring words, in order from most to least occuring
+3 if less than 3 words, return whatever words exist (2, 1, or 0) in desc ord
+
+E
+examples show that if just 1 "word", empty list is returned. Also, it's
+unclear form these examples if "..." or "," is being taken as a word. Anyway,
+it seems that my rule 3 is wrong. Or the 3rd and 4th examples are wrong. Seems
+just as likely.
+
+D
+String input
+List output
+
+A
+-split string into words
+    words = string.split()
+
+-if word has no alphas, discard it
+    for word in words:
+        for char in word:
+            alphas = char.isalpha()
+            if alphas:
+                break
+        if not alphas:
+            words.remove(word)
+
+-sort list of words by count
+    words = sorted(words, key=count)
+
+-print list of top used words
+    try:
+        print(words[0:3])
+    except:
+        print(words)
+
+FAILED: did well on everything, except I failed to realize that my code would 
+most likely just return multiples of the most-occurring word(s). This problem 
+is actually ideal for a dictionary. Dictionaries are often the right tool for 
+for counting problems.
+
+"""
+
+# def top_3_words(string):
+#     word_list = string.split()
+#     words = {word: word_list.count(word) for word in word_list}
+
+#     for word in word_list:
+#         for char in word:
+#             alphas = char.isalpha()
+#             if alphas:
+#                 break
+#         if not alphas:
+#             words.pop(word)
+
+    
+#     word_list = sorted(words, key=words.get, reverse=True)
+
+#     try:
+#         print(word_list[0:3])
+#     except:
+#         print(word_list)
+
+# top_3_words(" , e .. ") # ["e"]
+# top_3_words(" ... ") # []
+# top_3_words(" ' ") # []
+# top_3_words(" ''' ") # []
+# top_3_words("""In a village of La Mancha, the name of which I have no desire to call to
+# mind, there lived not long since one of those gentlemen that keep a lance
+# in the lance-rack, an old buckler, a lean hack, and a greyhound for
+# coursing. An olla of rather more beef than mutton, a salad on most
+# nights, scraps on Saturdays, lentils on Fridays, and a pigeon or so extra
+# on Sundays, made away with three-quarters of his income.""") # should return ["a", "of", "on"]
