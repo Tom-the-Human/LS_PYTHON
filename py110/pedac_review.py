@@ -123,9 +123,52 @@ Move the first letter of each word to the end of it, then add "ay"
 to the end of the word. Leave punctuation marks untouched.
 
 P
+1 take a string arg of words
+2 move the first letter of each word to the end of it
+3 append "ay"to the end of the word
+4 ignore punctuation (leave it untouched)
+5 return the new string
+
+E
+2 tests included below
+only test with punctuation has it separated from the words, so still
+a little unclear how a word should be handled if it has punctuation
+atteched to it. I assume 'orldway!' would be correct
+
+D
+string in
+string out
+will need to use split, so operating on a list of strings will be necessary
+probably even need to split individual letters, so sublist of chars
+
+A
+- split to list of words
+- for word in list, move thefirst character to the end and add "ay"
+    - assign first char to a variable (first = word[0])
+    - new_word = word[1:] + first + "ay"
+    - word = new word
+    !!!this solution will not word for words with attached punctuation!!!
+
+- join and return word list
+
+1/27/25 - passed both tests in about 20 mins, but haven't gotten to test
+    it against theother tests on Codewars yet. Will check later and may update
+
 """
 def pig_it(text):
-    pass
+    words = text.split()
+    pig_words = []
 
-pig_it('Pig latin is cool') # igPay atinlay siay oolcay
-pig_it('Hello world !')     # elloHay orldway !
+    for word in words:
+        if word.isalpha():    
+            first = word[0]
+            new_word = word[1:] + first + "ay"
+            pig_words.append(new_word)
+        else:
+            pig_words.append(word)
+
+    return ' '.join(pig_words)
+
+
+print(pig_it('Pig latin is cool')) # igPay atinlay siay oolcay
+print(pig_it('Hello world !'))     # elloHay orldway !
