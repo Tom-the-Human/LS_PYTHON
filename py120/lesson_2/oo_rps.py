@@ -72,7 +72,7 @@ class Computer(Player):
             case 'Ameca':
                 # copies the player's previous move
                 if self._game.move_history.get('human') == []:
-                    self.move = 'scissors'
+                    self.move = Player.MOVES.get(str(choice(range(1, 4))))
                 else:
                     match self._game.move_history['human'][-1]:
                         case 'rock':
