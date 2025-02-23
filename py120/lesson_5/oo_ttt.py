@@ -202,45 +202,75 @@ class TTTGame:
         #   and maybe to allow the user to watch 2 computers play.
         #   If they wanted to. For some reason or other.
         self.board = Board()
-        self.p1 = Human(P1_MARKER) #FIXME allow user to decide Player classes
-        self.p2 = Computer(P2_MARKER)
+        p1_class, p2_class = [Human, Computer] #FIXME self.player_setup() or [Human, Computer]
+        self.p1 = p1_class(P1_MARKER)
+        self.p2 = p2_class(P2_MARKER)
         self.winner = None
         TTTGame.games_started += 1
 
     def play(self):
         while True:
+            while True:
+                self.board.display()
+                self.player1_moves()
+                if self.is_game_over():
+                    break
+
+                self.player2_moves()
+                if self.is_game_over():
+                    break
+
+            if self.winner:
+                self.award_point(self.winner)
+
             self.board.display()
+            self.display_results()
 
-            self.player1_moves()
-            if self.is_game_over():
-                break
+            if self.p1.points >= self.WINNING_SCORE or \
+                self.p2.points >= self.WINNING_SCORE:
+                self.display_game_over(self.winner)
 
-            self.player2_moves()
-            if self.is_game_over():
-                break
+                if not self.play_again():
+                    self.display_goodbye()
+                    break
 
-        if self.winner:
-            self.award_point(self.winner)
-        self.board.display()
-        self.display_results()
-        if self.p1.points < self.WINNING_SCORE and \
-            self.p2.points < self.WINNING_SCORE:
+                # Reset score for new game  
+                self.p1.points = 0
+                self.p2.points = 0
+
+            # Reset for next round
             self.board = Board()
             self.winner = None
-            self.play()
 
-        for player in (self.p1, self.p2):
-            if player.points >= self.WINNING_SCORE:
-                self.display_game_over(player)
-                play_again = self.play_again()
-                if play_again:
-                    self.board = Board()
-                    self.p1.points = 0
-                    self.p2.points = 0
-                    self.winner = None
-                    self.play()
-                else:
-                    self.display_goodbye()
+    # def player_setup(self):
+    #     print("This game supports up to 2 human players!")
+    #     humans = input("How many people are playing? (1 or 2)\n")
+    #     while not (isinstance(humans, int)) or (not 0 < humans < 3):
+    #         try:
+    #             humans = int(humans)
+    #         except ValueError:
+    #             print("That's not a valid entry.")
+    #             humans = input("How many people are playing? (1 or 2)\n")
+
+    #         if not humans in {1, 2}:
+    #             print("That's not a valid entry.")
+    #             humans = input("How many people are playing? (1 or 2)\n")
+
+    #     if humans == 2:
+    #         return [Human, Human]
+        
+    #     turn_orders = [[Human, Computer], [Computer, Human],]
+    #     print("Great! Who Should go first, you or the computer?")
+    #     first = input("1: Me\n2: Computer\nAny Other Key: Random!\n")
+    #     try:
+    #         if int(first) == 1:
+    #             return turn_orders[0]
+    #         elif int(first) == 2:
+    #             return turn_orders[1]
+    #     except ValueError:
+    #         pass
+
+    #     return random.choice(turn_orders)
 
     def display_welcome(self):
         system('clear')
