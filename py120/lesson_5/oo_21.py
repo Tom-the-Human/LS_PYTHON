@@ -287,7 +287,7 @@ class TwentyOneGame:
             if not self.play_again():
                 break
 
-            self.__init__()
+            self.reset_for_new_game()
 
         self.display_goodbye_message()
 
@@ -453,9 +453,9 @@ class TwentyOneGame:
         # save cursor position
         print("\033[s", end="")
         # move the cursor to row 8, column 13 ("Your Chips: ")
-        print("\033[8;13H", end="")  
+        print("\033[8;13H", end="")
         # overwrite the old chip count
-        # assuming the chip value is at most 4 digits; 
+        # assuming the chip value is at most 4 digits;
         # pad with spaces to clear previous content
         print(f"{self.player.chips:4d}", end="")
         # restore cursor to saved position
@@ -571,6 +571,17 @@ class TwentyOneGame:
         self.winner = None
         self.bet = 0
         self.dealer.hide_hole()
+
+    def reset_for_new_game(self):
+        """
+        Reset state for new game (total reset).
+        """
+        self.deck = Deck()
+        self.dealer = Dealer()
+        self.player = Player()
+        self.winner = None
+        self.bet = 0
+        system('clear')
 
     def play_again(self):
         """
