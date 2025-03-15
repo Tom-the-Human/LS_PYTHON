@@ -12,69 +12,37 @@ P
 4 if buffer full, overwrite oldest value
 5 if buffer empty, return None
 
-E
-see below
-
-D
-buffer is list
-maybe use a 2nd list to track which index holds oldest value
-^ No, that's overcomplicated,
-     only really need current oldest value and next index to update
-
-A
-- init
-    - initialize to a list with the length provided, with None at each index
-    - init tracker for oldest value in buffer = None (read index) read_idx
-    - init tracker for next index to overwrite (write index) write_idx
-    - the trackers should be updated every time the buffer is
-
-
-- put
-    - take a value argument
-    - replace value at write index in buffer with new value
-    - update tracker with index of new value
-
-- get
-    - get and return the oldest value from the buffer, which is held in read_idx
-    - replace that oldest value with None
-    - update tracker by removing the final value
 
 """
-#NONWORKING: I tried translating the C code from the Wikipedia page, but I 
-#   don't understand how some of it works. Started to review and integrate
-#   the LS solution, but I'm having difficulty with even that.
-#   I need to redo this problem. Moving on for now.
-# It's so disheartening coming upon things like this that seem totally over
-#   my head. I have to remember that I was crushing it up to this point in the
-#   lesson, and IT'S SUPPOSED TO BE HARD. That's how you know you're learning.
+# Tried twice to write this on my own and havent been able to. 
+# Tricky to model mentally.
+# Below is LS solution.
 
 class CircularBuffer:
     def __init__(self, size):
-        self.state = [None] * size
-        self.write_idx = 0
-        self.read_idx = 0
-        
-    def put(self, value):
-        next = (self.write_idx + 1) % len(self.state)
+        self.buffer = [None] * size
+        self.next = 0
+        self.oldest = 0
 
-        if  self.state[self.write_idx] is not None:
-            self.read_idx = next
-        
-        self.state[self.write_idx] = value
-        self.write_idx = next
+    def put(self, obj):
+        next_item = (self.next + 1) % len(self.buffer)
+
+        if self.buffer[self.next] is not None:
+            self.oldest = next_item
+
+        self.buffer[self.next] = obj
+        self.next = next_item
 
     def get(self):
-        output = self.state[self.read_idx]
-        self.state[self.read_idx] = None
+        value = self.buffer[self.oldest]
+        self.buffer[self.oldest] = None
+        if value is not None:
+            self.oldest += 1
+            self.oldest %= len(self.buffer)
 
-        if output is not None:
-            self.read_idx += 1
-            self.read_idx %= len(self.state)
+        return value
 
-        return output
 
-    # def __str__(self):
-    #     return str(self.state)
 
 buffer = CircularBuffer(3)
 
