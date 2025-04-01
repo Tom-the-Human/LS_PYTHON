@@ -390,12 +390,12 @@ class TwentyOneGame:
             """
             return ROW if suit in RED_SUITS else BOW
 
-        card_top = "╭──────╮"
-        card_upper = "│{}     │"
-        card_middle_10 = "│  {}  │"
-        card_middle_other = "│  {}   │"
-        card_lower = "│     {}│"
-        card_bottom = "╰──────╯"
+        CARD_TOP = "╭──────╮"
+        CARD_UPPER = "│{}     │"
+        CARD_MIDDLE_10 = "│  {}  │"
+        CARD_MIDDLE_OTHER = "│  {}   │"
+        CARD_LOWER = "│     {}│"
+        CARD_BOTTOM = "╰──────╯"
 
         face_down_middle = f"{BOW}│▒▒▒▒▒▒│{RESET}" # Card back always BOW
 
@@ -408,24 +408,24 @@ class TwentyOneGame:
         def format_hand(hand):
             """ASCII card representations for given hand."""
             top_row = "   ".join([color_card(card[1]) +
-                                card_top + RESET for card in hand])
+                                CARD_TOP + RESET for card in hand])
             upper_row = "   ".join([
-                color_card(card[1]) + card_upper.format(card[1]) +
+                color_card(card[1]) + CARD_UPPER.format(card[1]) +
                 RESET if card[1] != '▒' else face_down_middle for card in hand
             ])
             middle_row = "   ".join([
-                color_card(card[1]) + card_middle_10.format(card[0]) +
+                color_card(card[1]) + CARD_MIDDLE_10.format(card[0]) +
                 RESET if card[0] == '10'
                 else color_card(card[1]) +
-                card_middle_other.format(card[0]) + RESET if card[0] != '▒'
+                CARD_MIDDLE_OTHER.format(card[0]) + RESET if card[0] != '▒'
                 else face_down_middle for card in hand
             ])
             lower_row = "   ".join([
-                color_card(card[1]) + card_lower.format(card[1]) +
+                color_card(card[1]) + CARD_LOWER.format(card[1]) +
                 RESET if card[1] != '▒' else face_down_middle for card in hand
             ])
             bottom_row = "   ".join([color_card(card[1]) +
-                                    card_bottom + RESET for card in hand])
+                                    CARD_BOTTOM + RESET for card in hand])
 
             return "\n".join([top_row,
                               upper_row,

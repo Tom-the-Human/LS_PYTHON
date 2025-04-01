@@ -675,3 +675,75 @@ C
 #         output += char.upper() + (char.lower() * idx) + '-'
 
 #     return output.strip('-')
+
+# Agent 47, you have a new task! Among citizens of the city X are hidden 2 dangerous criminal twins. Your task is to identify them and eliminate!
+
+# Given an array of integers, your task is to find two same numbers and return one of them, for example in array [2, 3, 6, 34, 7, 8, 2] answer is 2.
+
+# If there are no twins in the city - return None or the equivalent in the language that you are using.
+
+"""
+P
+Input: list of integers
+Ouput integer that is duplicated in the list
+Explicit: 
+-   If an int is duplicated in the list return it
+-   If no duplicates, return None
+-   What if more than 2????
+-   What if more than one set of twins????
+Implicit: 
+
+E
+examples are straightforward
+
+C
+check
+2 questions unanswered
+
+H
+Make a new empty list
+For each number in input list
+-   Check to see if it is in the new list
+-   If not:
+-       append it to the list
+-   If so:
+        Return it
+
+D
+List input
+Intermediary list to collect ints that have been seen
+Integers
+
+A
+Make a new empty list
+For each number in input list
+-   Check to see if it is in the new list
+if number in new_list:
+    return number
+
+new_list.append(number)
+
+-   If not:
+-       append it to the list
+-   If so:
+        Return it
+
+C
+"""
+
+# def elimination(lst):
+#     new_lst = []
+
+#     for num in lst:
+#         if num in new_lst: #if lst.count(num) == 2
+#             return num
+
+#         new_lst.append(num)
+
+tup1: tuple = (1, 2, 3,)
+list1: list = (1, 2, 3,)
+list1 += (4,)
+print(list1)
+print(list1.__class__)
+tup1 += list1
+print(tup1)

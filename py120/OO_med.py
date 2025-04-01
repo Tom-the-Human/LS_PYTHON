@@ -14,76 +14,76 @@ P
 
 
 """
-# Tried twice to write this on my own and havent been able to. 
-# Tricky to model mentally.
-# Below is LS solution.
+# # Tried twice to write this on my own and havent been able to. 
+# # Tricky to model mentally.
+# # Below is LS solution.
 
-class CircularBuffer:
-    def __init__(self, size):
-        self.buffer = [None] * size
-        self.next = 0
-        self.oldest = 0
+# class CircularBuffer:
+#     def __init__(self, size):
+#         self.buffer = [None] * size
+#         self.next = 0
+#         self.oldest = 0
 
-    def put(self, obj):
-        next_item = (self.next + 1) % len(self.buffer)
+#     def put(self, obj):
+#         next_item = (self.next + 1) % len(self.buffer)
 
-        if self.buffer[self.next] is not None:
-            self.oldest = next_item
+#         if self.buffer[self.next] is not None:
+#             self.oldest = next_item
 
-        self.buffer[self.next] = obj
-        self.next = next_item
+#         self.buffer[self.next] = obj
+#         self.next = next_item
 
-    def get(self):
-        value = self.buffer[self.oldest]
-        self.buffer[self.oldest] = None
-        if value is not None:
-            self.oldest += 1
-            self.oldest %= len(self.buffer)
+#     def get(self):
+#         value = self.buffer[self.oldest]
+#         self.buffer[self.oldest] = None
+#         if value is not None:
+#             self.oldest += 1
+#             self.oldest %= len(self.buffer)
 
-        return value
+#         return value
 
 
 
-buffer = CircularBuffer(3)
+# buffer = CircularBuffer(3)
 
-print(buffer.get() is None)          # True
+# print(buffer.get() is None)          # True
 
-buffer.put(1)
-buffer.put(2)
-print(buffer.get() == 1)             # True
+# buffer.put(1)
+# buffer.put(2)
+# print(buffer.get() == 1)             # True
 
-buffer.put(3)
-buffer.put(4)
-print(buffer.get() == 2)             # True
+# buffer.put(3)
+# buffer.put(4)
+# print(buffer.get() == 2)             # True
 
-buffer.put(5)
-buffer.put(6)
-buffer.put(7)
-print(buffer.get() == 5)             # True
-print(buffer.get() == 6)             # True
-print(buffer.get() == 7)             # True
-print(buffer.get() is None)          # True
+# buffer.put(5)
+# buffer.put(6)
+# buffer.put(7)
+# print(buffer.get() == 5)             # True
+# print(buffer.get() == 6)             # True
+# print(buffer.get() == 7)             # True
+# print(buffer.get() is None)          # True
 
-buffer2 = CircularBuffer(4)
+# buffer2 = CircularBuffer(4)
 
-print(buffer2.get() is None)         # True
+# print(buffer2.get() is None)         # True
 
-buffer2.put(1)
-buffer2.put(2)
-print(buffer2.get() == 1)            # True
+# buffer2.put(1)
+# buffer2.put(2)
+# print(buffer2.get() == 1)            # True
 
-buffer2.put(3)
-buffer2.put(4)
-print(buffer2.get() == 2)            # True
+# buffer2.put(3)
+# buffer2.put(4)
+# print(buffer2.get() == 2)            # True
 
-buffer2.put(5)
-buffer2.put(6)
-buffer2.put(7)
-print(buffer2.get() == 4)            # True
-print(buffer2.get() == 5)            # True
-print(buffer2.get() == 6)            # True
-print(buffer2.get() == 7)            # True
-print(buffer2.get() is None)         # True
+# buffer2.put(5)
+# buffer2.put(6)
+# buffer2.put(7)
+# print(buffer2.get() == 4)            # True
+# print(buffer2.get() == 5)            # True
+# print(buffer2.get() == 6)            # True
+# print(buffer2.get() == 7)            # True
+# print(buffer2.get() is None)         # True
 
 """
 2 & 3
@@ -518,3 +518,155 @@ evaluates those cards as a poker hand.
 #     )
 # )
 # print(hand.evaluate() == "High card")
+
+########
+# class LoggerMixin:
+#     # provides logging functionality
+#     def log(self):
+#         print(self)
+
+# class SerializableMixin:
+#     # provides methods that convert objects to and from dicts
+#     def to_dict(self):
+#         return self.__dict__.copy()
+
+#     @classmethod
+#     def from_dict(cls, data):
+#         instance = cls.__new__(cls)
+#         for key, value in data.items():
+#             setattr(instance, key, value)
+#         return instance
+
+# class DhammapadaQuote(LoggerMixin, SerializableMixin):
+#     # creates instances of quotes with attributes for text and verse_num
+#     def __init__(self, text, verse_num):
+#         self.text = text
+#         self.verse_num = verse_num
+
+#     def __str__(self):
+#         return f"{self.text}\n- Dhammapada verse {self.verse_num}"
+
+#     def __repr__(self):
+#         return f"DhammapadaQuote{self.text, self.verse_num}"
+
+# class SongLyric(LoggerMixin, SerializableMixin):
+#     # creates instances of quotes with attributes for lyric, song, band, and author
+#     def __init__(self, lyric, song, artist, author):
+#         self.lyric = lyric
+#         self.song = song
+#         self.artist = artist
+#         self.author = author
+
+#     def __str__(self):
+#         return f"{self.lyric}\n{self.artist} - {self.song}\nwritten by {self.author}"
+
+#     def __repr__(self):
+#         return f"SongLyric{self.lyric, self.song, self.artist, self.author}"
+
+
+# dhamma33 = DhammapadaQuote(
+#     "The restless, agitated mind,\n     Hard to protect, hard to control,\nThe sage makes straight\n     As a fletcher the shaft of an arrow.",
+#     33,
+# )
+
+# puscifer_algorithm = SongLyric(
+#     "We bend the knee\nWe serve the will\nWe venerate and genuflect to\nOur God\nThe algorithm",
+#     "The Algorithm",
+#     "Puscifer",
+#     "Maynard James Keenan",
+# )
+
+# # Demonstrate logging functionality
+# print("Logging Dhammapada quote:")
+# dhamma33.log()
+# print("\nLogging song lyric:")
+# puscifer_algorithm.log()
+
+# # Demonstrate serialization
+# print("\nSerializing to dictionaries:")
+# dhamma_dict = dhamma33.to_dict()
+# print(dhamma_dict)
+# puscifer_dict = puscifer_algorithm.to_dict()
+# print(puscifer_dict)
+
+# # Demonstrate deserialization
+# print("\nDeserializing from dictionaries:")
+# new_dhamma = DhammapadaQuote.from_dict(dhamma_dict)
+# new_puscifer = SongLyric.from_dict(puscifer_dict)
+
+# print("\nLogging recreated objects:")
+# new_dhamma.log()
+# print()
+# new_puscifer.log()
+
+#####
+
+# class Book:
+#     def __init__(self, title, author, isbn):
+#         self.title = title
+#         self.author = author
+#         self.isbn = isbn
+
+#     def __str__(self):
+#         return f"{self.title} by {self.author}"
+
+#     def __repr__(self):
+#         return f"Book{self.title, self.author, self.isbn}"
+
+# class Library:
+#     def __init__(self):
+#         self.books = dict()  # ISBN -> (Book object, status)
+
+#     def add_book(self, title, author, isbn):
+#         # Create a Book object as a collaborator
+#         book = Book(title, author, isbn)
+#         # Store the book with its status using ISBN as the key
+#         self.books[isbn] = (book, "available")
+#         return f"{book} added"
+
+#     def remove_book(self, isbn):
+#         if isbn in self.books:
+#             book, _ = self.books[isbn]
+#             del self.books[isbn]
+#             return f"{book} removed"
+#         return "Book not found"
+
+#     def search(self, term):
+#         # Search for books by title or author
+#         results = []
+#         for isbn, (book, status) in self.books.items():
+#             if term.casefold() in book.title.casefold() \
+#             or term.casefold() in book.author.casefold():
+#                 results.append((book, status))
+#         return results
+
+#     def check_out_book(self, isbn):
+#         if isbn in self.books:
+#             book, status = self.books[isbn]
+#             if status == "available":
+#                 self.books[isbn] = (book, "checked out")
+#                 return f"{book} is now checked out"
+#             else:
+#                 return f"{book} is already checked out"
+#         return "Book not found"
+
+#     def return_book(self, isbn):
+#         if isbn in self.books:
+#             book, status = self.books[isbn]
+#             if status == "checked out":
+#                 self.books[isbn] = (book, "available")
+#                 return f"{book} has been returned"
+#             else:
+#                 return f"{book} was not checked out"
+#         return "Book not found"
+
+# lib = Library()
+# lib.add_book("Dhammapada, The", "Gil Fronsdal", 9781645472438)
+# lib.add_book("Limitless", "Jim Kwik", 9781401958237)
+
+# print(lib.books)
+
+# print(lib.search("Kwik"))
+# print(lib.check_out_book(9781401958237))
+# print(lib.return_book(9781401958237))
+
