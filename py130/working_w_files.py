@@ -64,8 +64,9 @@
 
 # -----------
 # it's best practice to include error handling when working with files
-try:
-    with open('wrong_path.txt', 'r') as file:
-        content = file.read()
-except FileNotFoundError:
-    print('The file does not exist')
+# try:
+#     with open('wrong_path.txt', 'r') as file:
+#         content = file.read()
+# except FileNotFoundError:
+#     print('The file does not exist')
+
