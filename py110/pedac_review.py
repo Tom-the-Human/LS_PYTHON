@@ -740,10 +740,5 @@ C
 
 #         new_lst.append(num)
 
-tup1: tuple = (1, 2, 3,)
-list1: list = (1, 2, 3,)
-list1 += (4,)
-print(list1)
-print(list1.__class__)
-tup1 += list1
-print(tup1)
+a, b, c, = 'abc'
+print(a, b, c)
