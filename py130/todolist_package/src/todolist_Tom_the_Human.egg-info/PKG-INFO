@@ -1,0 +1,18 @@
+Metadata-Version: 2.4
+Name: todolist_Tom_the_Human
+Version: 0.1.0
+Summary: A student's to-do list application.
+Author-email: Tom Hodges <tomhodges83@gmail.com>
+Project-URL: Homepage, https://github.com/Tom-the-Human/LS_PYTHON/tree/main/py130/todolist
+Project-URL: Issues, https://github.com/Tom-the-Human/LS_PYTHON/tree/main/py130/todolist/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+
+Tom's todolist.py project from the Launch School curriculum.
+
+Unless it continues to recieve significant updates, it will not likely be of much interest to anyone outside of Launch School.
+
+Or perhaps you're interested in hiring me to write software, in which case you might be interested to see that I can do at least this much (and more).

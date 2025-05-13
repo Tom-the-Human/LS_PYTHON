@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "todolist_Tom_the_Human"
+version = "0.1.0"
+authors = [
+    {name = "Tom Hodges", email = "tomhodges83@gmail.com"},
+]
+description = "A student's to-do list application."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    # More classifiers can be found at
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/Tom-the-Human/LS_PYTHON/tree/main/py130/todolist"
+Issues = "https://github.com/Tom-the-Human/LS_PYTHON/tree/main/py130/todolist/issues"

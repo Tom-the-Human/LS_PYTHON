@@ -1,0 +1,10 @@
+README.md
+pyproject.toml
+src/todolist_Tom_the_Human/__inti__.py
+src/todolist_Tom_the_Human/todo.py
+src/todolist_Tom_the_Human/todolist.py
+src/todolist_Tom_the_Human.egg-info/PKG-INFO
+src/todolist_Tom_the_Human.egg-info/SOURCES.txt
+src/todolist_Tom_the_Human.egg-info/dependency_links.txt
+src/todolist_Tom_the_Human.egg-info/top_level.txt
+tests/test_todolist.py

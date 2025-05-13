@@ -97,104 +97,116 @@ find the highest value and format a string as shown in examples, using that pair
 no instructions given for what to do if multiple sentences are equal length,
     so I'll let Python decide what to do there and observe result
 """
-# from functools import partial
+# # from functools import partial
 
-# def splitter(string, punct):
-#     # return list of sentences with punctuation intact
-#     # not a good solution because it also returns multisentence strings
-#     #   that don't happen to contain `punct`
-#     final_char = string[-1]
+# # def splitter(string, punct):
+# #     # return list of sentences with punctuation intact
+# #     # not a good solution because it also returns multisentence strings
+# #     #   that don't happen to contain `punct`
+# #     final_char = string[-1]
 
-#     if punct in string:
-#         sentences = string.split(punct)
-#         blanks = sentences.count('')
-#         while blanks:
-#             sentences.remove('')
-#             blanks -= 1
+# #     if punct in string:
+# #         sentences = string.split(punct)
+# #         blanks = sentences.count('')
+# #         while blanks:
+# #             sentences.remove('')
+# #             blanks -= 1
 
-#         # clean list of strings that contain other punctuators!
-#         def clean(sentence):
-#             for ender in ['.', '?', '!']:
-#                 if ender in sentence:
-#                     return False
+# #         # clean list of strings that contain other punctuators!
+# #         def clean(sentence):
+# #             for ender in ['.', '?', '!']:
+# #                 if ender in sentence:
+# #                     return False
                 
-#                 return True
+# #                 return True
             
-#         cleaned_list = []
-#         for idx in range(len(sentences)):
-#             if clean(sentences[idx]):
-#                 cleaned_list.append(sentences[idx])
+# #         cleaned_list = []
+# #         for idx in range(len(sentences)):
+# #             if clean(sentences[idx]):
+# #                 cleaned_list.append(sentences[idx])
 
-#         # add `punct` back in
-#         if final_char == punct:
-#             for idx in range(len(cleaned_list)):
-#                 cleaned_list[idx] += punct
-#         else:
-#             for idx in range(len(cleaned_list[:-1])):
-#                 cleaned_list[idx] += punct
+# #         # add `punct` back in
+# #         if final_char == punct:
+# #             for idx in range(len(cleaned_list)):
+# #                 cleaned_list[idx] += punct
+# #         else:
+# #             for idx in range(len(cleaned_list[:-1])):
+# #                 cleaned_list[idx] += punct
 
-#         return sentences
+# #         return sentences
 
-#     return []
+# #     return []
 
-# def longest_sentence(string):
-#     sentence_list = []
-#     get_sentences = partial(splitter, string)
-#     for punctuation in '.?!':
-#         sentence_list += get_sentences(punctuation)
+# # def longest_sentence(string):
+# #     sentence_list = []
+# #     get_sentences = partial(splitter, string)
+# #     for punctuation in '.?!':
+# #         sentence_list += get_sentences(punctuation)
 
-#     word_counts = dict()
-#     for sentence in sentence_list:
-#         word_counts[sentence] = len(sentence.split(' ')) # should get number of words
+# #     word_counts = dict()
+# #     for sentence in sentence_list:
+# #         word_counts[sentence] = len(sentence.split(' ')) # should get number of words
 
-#     longest, count = max(word_counts.items())
+# #     longest, count = max(word_counts.items())
 
+# #     return f"{longest}\n\nThe longest sentence has {count} words."
+
+# #     # find the maximum value in the dict pairs
+# #     # format the output with the pair
+# #     # return the output
+
+# def split_into_sentences(text):
+#     """
+#     Manually splits the text into sentences using '.', '!', or '?' as terminators.
+#     Each sentence includes its ending punctuation.
+#     """
+#     sentences = []
+#     current_sentence = ""
+    
+#     for char in text:
+#         current_sentence += char
+#         if char in ".!?":
+#             # We found the end of a sentence; strip and add if non-empty.
+#             stripped = current_sentence.strip()
+#             if stripped:
+#                 sentences.append(stripped)
+#             current_sentence = ""
+    
+#     # If text doesn't end with a sentence terminator, you may want to include the leftover.
+#     if current_sentence.strip():
+#         sentences.append(current_sentence.strip())
+        
+#     return sentences
+
+# def longest_sentence(text):
+#     sentences = split_into_sentences(text)
+    
+#     if not sentences:
+#         return ""
+    
+#     # Build a dictionary mapping each sentence to its word count.
+#     # Splitting on whitespace works because any sequence of non-space characters is a word.
+#     sentence_word_counts = {sentence: len(sentence.split()) for sentence in sentences}
+    
+#     # Get the sentence having maximum word count. (In case of a tie, Python's max returns one arbitrarily.)
+#     longest = max(sentence_word_counts, key=sentence_word_counts.get)
+#     count = sentence_word_counts[longest]
+    
 #     return f"{longest}\n\nThe longest sentence has {count} words."
 
-#     # find the maximum value in the dict pairs
-#     # format the output with the pair
-#     # return the output
 
-def split_into_sentences(text):
-    """
-    Manually splits the text into sentences using '.', '!', or '?' as terminators.
-    Each sentence includes its ending punctuation.
-    """
-    sentences = []
-    current_sentence = ""
-    
-    for char in text:
-        current_sentence += char
-        if char in ".!?":
-            # We found the end of a sentence; strip and add if non-empty.
-            stripped = current_sentence.strip()
-            if stripped:
-                sentences.append(stripped)
-            current_sentence = ""
-    
-    # If text doesn't end with a sentence terminator, you may want to include the leftover.
-    if current_sentence.strip():
-        sentences.append(current_sentence.strip())
-        
-    return sentences
+import re
 
 def longest_sentence(text):
-    sentences = split_into_sentences(text)
-    
-    if not sentences:
-        return ""
-    
-    # Build a dictionary mapping each sentence to its word count.
-    # Splitting on whitespace works because any sequence of non-space characters is a word.
-    sentence_word_counts = {sentence: len(sentence.split()) for sentence in sentences}
-    
-    # Get the sentence having maximum word count. (In case of a tie, Python's max returns one arbitrarily.)
-    longest = max(sentence_word_counts, key=sentence_word_counts.get)
-    count = sentence_word_counts[longest]
-    
-    return f"{longest}\n\nThe longest sentence has {count} words."
+    sentences = re.findall(r'[A-Z]+[^.!?]*[.!?]', text)
 
+    longest = [
+        max(sentence.split(), key=len) for sentence in sentences
+        ]
+    
+    print(longest)
 
+    return f"{longest[0]}\nThe longest sentence has {len(longest[0].split())} words."
 
 
 long_text = (
@@ -245,3 +257,5 @@ print(longest_sentence("To be or not to be! Is that the question?"))
 # To be or not to be!
 #
 # The longest sentence has 6 words.
+
+# r'[A-Z]+[^.?!]*[.?!]'
