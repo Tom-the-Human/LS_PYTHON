@@ -138,11 +138,11 @@ atteched to it. I assume 'orldway!' would be correct
 D
 string in
 string out
-will need to use split, so operating on a list of strings will be necessary
-probably even need to split individual letters, so sublist of chars
+will need to use break, so operating on a list of strings will be necessary
+probably even need to break individual letters, so sublist of chars
 
 A
-- split to list of words
+- break to list of words
 - for word in list, move thefirst character to the end and add "ay"
     - assign first char to a variable (first = word[0])
     - new_word = word[1:] + first + "ay"
@@ -156,7 +156,7 @@ A
 
 """
 # def pig_it(text):
-#     words = text.split()
+#     words = text.break()
 #     pig_words = []
 
 #     for word in words:
@@ -998,16 +998,16 @@ All examples are clear, any char contributes to word count
 C
 
 H
-use split with the default arg to get words
+use break with the default arg to get words
 use a dict comprehension to create a dict of lengths as keys and counts as values
 
 D
 string input
-list from split
+list from break
 dict output
 
 A
-words = split string
+words = break string
 
 use a dict comprehension to create a dict of lengths as keys and counts as values
 might not actually be able to do this in one go ...
@@ -1021,7 +1021,7 @@ C
 #     return ''.join(ch for ch in word if ch.isalnum())
 
 # def word_sizes(string):
-#     lengths = [len(cleaned(word)) for word in string.split()]
+#     lengths = [len(cleaned(word)) for word in string.break()]
 #     return {length: lengths.count(length) for length in lengths}
 
 # # All of these examples should print True
@@ -2174,26 +2174,26 @@ return the result list
 
 C
 """
-def merge(list1, list2):
-    # both_lists = list1 + list2
-    # result_list = []
+# def merge(list1, list2):
+    # # both_lists = list1 + list2
+    # # result_list = []
     
-    # while len(result_list) < len(list1 + list2):
-    #     result_list.append(min(both_lists))
-    #     both_lists.remove(min(both_lists))
+    # # while len(result_list) < len(list1 + list2):
+    # #     result_list.append(min(both_lists))
+    # #     both_lists.remove(min(both_lists))
 
-    # return result_list
-    copy1 = list1[:]
-    copy2 = list2[:]
-    result = []
+    # # return result_list
+    # copy1 = list1[:]
+    # copy2 = list2[:]
+    # result = []
 
-    while copy1 and copy2:
-        if copy1[0] <= copy2[0]:
-            result.append(copy1.pop(0))
-        else:
-            result.append(copy2.pop(0))
+    # while copy1 and copy2:
+    #     if copy1[0] <= copy2[0]:
+    #         result.append(copy1.pop(0))
+    #     else:
+    #         result.append(copy2.pop(0))
 
-    return result + copy1 + copy2
+    # return result + copy1 + copy2
 
 # All of these examples should print True
 # print(merge([1, 5, 9], [2, 6, 8]) == [1, 2, 5, 6, 8, 9])
@@ -2248,4 +2248,305 @@ described above. You may assume that every element of the list will have
 the same data type: either all numbers or all strings.
 
 Feel free to use the merge function you wrote in the previous exercise.
+
+P
+Input: list
+Output: sorted list
+Explicit:
+1 break the list into nested sublists
+2 repeat until each element is in its own sublist, nested as deeply as 
+    necessary to break each element to its own list
+3 reconstruct the list in sorted order, one step at a time (see example)
+Implict:
+?
+
+E
+The example above makes sense but is hard to read. I'll work another example
+step by step.
+merge_sort([6, 2, 7, 1, 4]) == [1, 2, 4, 6, 7])
+[6, 2, 7, 1, 4] -> this being of odd length, I'm not sure where it will break.
+Since 5 // 2 == 2, I'll assume it breaks after the 2nd element.
+[[6, 2], [7, 1, 4]]
+[[[6], [2]], [[7], [1, 4]]]
+Again, because of the odd length, most elements are successfully separated,
+    but another break is necessary for the last 2 elements.
+[[[6], [2]], [[7], [[1], [4]]]]
+Ok, now we're ready to reconstruct it starting at the deepest level,
+    with all rejoined elements sorted.
+[[[6], [2]], [[7], [1, 4]]] -> rejoin [1, 4] which is already in order
+[[2, 6], [1, 4, 7]] -> 7 rejoined to 1, 4 and sorted, [2, 6] sorted
+[1, 2, 4, 6, 7] -> final rejoin, all sorted
+
+Hmm ... not especially enlightening. All I see for sure is I'll call merge()
+when rejoining the nested lists
+
+Might also need a helper that breaks a list in 2 if it has more than
+1 element. Not sure what part of that to make recursive.
+
+C
+I understand what's expected. Still not 100% on how to acheive it.
+
+H
+function merge_sort(list):
+ if list is small enough (len <= 1):  # base case
+   return list
+ else:
+   split list into left_half and right_half until base case
+   sorted_left = merge_sort(left_half)  # recursive call
+   sorted_right = merge_sort(right_half)  # recursive call
+   return merge(sorted_left, sorted_right)  # using your merge function
+
+D
+we heard you like lists, so we put some lists in your lists
+
+A
+function merge_sort(list):
+ if list is small enough (len <= 1):  # base case
+   return list
+ else:
+   split list into left_half and right_half until base case
+   sorted_left = merge_sort(left_half)  # recursive call
+   sorted_right = merge_sort(right_half)  # recursive call
+   return merge(sorted_left, sorted_right)  # using your merge function
+
+C
 """
+# def merge_sort(lst):
+#     if len(lst) <= 1:
+#         return lst
+
+#     sorted_left = merge_sort(lst[:len(lst) // 2])
+#     sorted_right = merge_sort(lst[len(lst) // 2:])
+    
+#     return merge(sorted_left, sorted_right)
+
+
+# # All of these examples should print True
+# print(merge_sort([9, 5, 7, 1]) == [1, 5, 7, 9])
+# print(merge_sort([5, 3]) == [3, 5])
+# print(merge_sort([6, 2, 7, 1, 4]) == [1, 2, 4, 6, 7])
+# print(merge_sort([9, 2, 7, 6, 8, 5, 0, 1]) == [0, 1, 2, 5, 6, 7, 8, 9])
+
+# original = ['Sue', 'Pete', 'Alice', 'Tyler', 'Rachel',
+#             'Kim', 'Bonnie']
+# expected = ['Alice', 'Bonnie', 'Kim', 'Pete', 'Rachel',
+#             'Sue', 'Tyler']
+# print(merge_sort(original) == expected)
+
+# original = [7, 3, 9, 15, 23, 1, 6, 51, 22, 37, 54,
+#             43, 5, 25, 35, 18, 46]
+# expected = [1, 3, 5, 6, 7, 9, 15, 18, 22, 23, 25,
+#             35, 37, 43, 46, 51, 54]
+# print(merge_sort(original) == expected)
+
+"""
+It is quite common to find yourself in a situation where you need to perform 
+a search on some data to find something you're looking for. Imagine that you 
+need to search through an old-fashioned phone book. Back in the day, phone 
+books were printed every year by phone companies. The phone books contained 
+an alphabetical list (by last name) of every customer, together with their 
+phone number. A straightforward way to search the phone book would be to go 
+through the phone book one name at a time, checking whether the current name 
+is the one you're trying to find.
+
+This may be a simple and easy way to search, but it's not very efficient. 
+In the worst case scenario, it could mean having to search through every 
+single name in the book, and some phone books could be over 1000 pages. 
+A linear search such as this can take quite a long time.
+
+A binary search is a much more efficient alternative. This algorithm lets you 
+cut the search area in half on each iteration by discarding the half that you 
+know your search term doesn't exist in. The binary search algorithm is able 
+to do this by relying on the data being sorted. Going back to the phone book 
+example, let's say that we're searching the following phone_book data for the 
+search item 'Smith':
+
+# Phone book data
+phone_book = [
+    'Embry',
+    'Hanson',
+    'Hawkins',
+    'John',
+    'Lee',
+    'Seeli',
+    'Smith',
+    'Zimmer',
+]
+
+With a linear search, we would have to sequentially go through each of the 
+names until we found the search item, 'Smith'. In a binary search, however, 
+the following sequence happens:
+
+Retrieve the middle value from the data (assume truncation to integer) --> 'John'.
+If the middle value is equal to 'Smith', stop the search.
+If the middle value is less than 'Smith':
+Discard the lower half, including the middle value --> 
+    `['Embry', 'Hanson', 'Hawkins', 'John'].
+Repeat the process from the top, using the upper half as the starting data --> 
+    ['Lee', 'Seeli', 'Smith', 'Zimmer'].
+If the middle value is greater than 'Smith', do the same as the previous step, 
+but with opposite halves.
+Using the process described above, the search successfully ends on the third 
+iteration when the middle value is 'Smith'. For an 8-element list like this, 
+we need, at most, 3 iterations. For an 8000-element list, we need, at most, 
+just 13 iterations. For 8,000,000 elements, we need just 23 iterations. This 
+is incredibly efficient.
+
+Implement a binary_search function that takes a list and a search item as 
+arguments, and returns the index of the search item if found, or -1 otherwise. 
+You may assume that the list argument will always be sorted.
+
+P
+Input: list, "search item" (string or int in examples (probably any type))
+Output: int reprenting index of target "search item", or -1 if not found
+Explicit:
+1 target an index halfway through the list and see if its element is higher 
+    or lower in value than the search item
+2 if it's lower, repeat with the 2nd half of the list
+3 if higher, repeat with 1st half
+4 repeat until target index holds search item
+5 return index of search item
+6 assume input is non-empty and already sorted
+Implicit:
+?
+
+E
+binary_search([1, 5, 7, 11, 23, 65, 89, 102], 89) == 6)
+looks like I'll want a similar operation to what was used in `merge_sort`
+    probably also recursive, or maybe just a while loop
+    base case being ele_at_target_index == search_item
+So:
+len([1, 5, 7, 11, 23, 65, 89, 102]) == 8
+set target to len(list) // 2 (-> 4)
+list[4] == 11 -> too low
+since too low, check upper/rightmost portion of list
+    or can think of as ADD to target index 1/2 of difference between
+        len(list) and target_index
+        yeah, I like this better than actually altering the list
+so target_idx += (len(list) - target_idx) // 2 
+    > 4 += (8 - 4) // 2 (-> 2) == 6
+    (use -= if element at target_idx is too high)
+list[6] == 65 -> too low
+so repeat target_idx += (len(list) - target_idx) // 2
+    > 6 += (8 - 6) // 2 (-> 1) == 7
+list[7] == 89 -> MATCH!
+return target_idx == 7
+Oh. Off by 1 error that whole time. Use (len(list) - 1) in place of len(list)
+    to correct.
+
+C
+check
+
+H
+1 target an index halfway through the list and see if its element is higher 
+    or lower in value than the search item
+2 if it's lower, repeat with the 2nd half of the list
+3 if higher, repeat with 1st half
+4 repeat until target index holds search item
+5 return index of search item
+
+D
+list input
+int output
+
+A
+init max_idx = len(list) - 1
+init target_idx = max_idx // 2
+1 target an index halfway through the list and see if its element is higher 
+    or lower in value than the search item
+2 if it's lower, repeat with the 2nd half of the list
+3 if higher, repeat with 1st half
+    - this isn't working as expected
+        i.e. (8 - 2) // 2 == 3, when I need 1 to make it work
+4 repeat until target index holds search item
+5 return index of search item
+
+C
+"""
+# def binary_search(lst, search_item):
+#     max_idx = len(lst) - 1
+#     min_idx = 0
+
+#     while min_idx <= max_idx:
+#         target_idx = min_idx + (max_idx - min_idx) // 2
+
+#         if lst[target_idx] == search_item:
+#             return target_idx
+#         elif lst[target_idx] < search_item:
+#             min_idx = target_idx + 1
+#         elif lst[target_idx] > search_item:
+#             max_idx = target_idx - 1
+
+
+#     return -1
+
+# # All of these examples should print True
+# businesses = ['Apple Store', 'Bags Galore', 'Bike Store',
+#               'Donuts R Us', 'Eat a Lot', 'Good Food',
+#               'Pasta Place', 'Pizzeria', 'Tiki Lounge',
+#               'Zooper']
+# print(binary_search(businesses, 'Pizzeria') == 7)
+# print(binary_search(businesses, 'Apple Store') == 0)
+
+# print(binary_search([1, 5, 7, 11, 23, 65, 89, 102], 77) == -1)
+# print(binary_search([1, 5, 7, 11, 23, 65, 89, 102], 89) == 6)
+# print(binary_search([1, 5, 7, 11, 23, 65, 89, 102], 5) == 1)
+
+# names = ['Alice', 'Bonnie', 'Kim', 'Pete', 'Rachel', 'Sue',
+#          'Tyler']
+# print(binary_search(names, 'Peter') == -1)
+# print(binary_search(names, 'Tyler') == 6)
+
+"""
+A Rational Number is any number that can be represented as the result of the 
+division between two integers, e.g., 1/3, 3/2, 22/7, etc. The number to the 
+left is called the numerator, and the number to the right is called the denominator.
+
+A Unit Fraction is a rational number where the numerator is 1.
+
+An Egyptian Fraction is the sum of a series of distinct unit fractions 
+(no two are the same), such as:
+
+1   1    1    1
+- + - + -- + --
+2   3   13   15
+
+Every positive rational number can be written as an Egyptian fraction. 
+For example:
+
+    1   1   1   1
+2 = - + - + - + -
+    1   2   3   6
+
+Write two functions: one that takes a Rational number as an argument, and 
+returns a list of the denominators that are part of an Egyptian Fraction 
+representation of the number, and another that takes a list of numbers in the 
+same format, and calculates the resulting Rational number. You will need to 
+use the Fraction class provided by the fractions module.
+"""
+from fractions import Fraction
+
+def egyptian():
+    pass
+
+def unegyption():
+    pass
+
+
+# Using the egyptian function
+# Your results may differ for these first 3 examples
+print(egyptian(Fraction(2, 1)))      # [1, 2, 3, 6]
+print(egyptian(Fraction(137, 60)))   # [1, 2, 3, 4, 5]
+print(egyptian(Fraction(3, 1)))
+# [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 230, 57960]
+
+# Using the unegyptian function
+# All of these examples should print True
+print(unegyptian(egyptian(Fraction(1, 2))) == Fraction(1, 2))
+print(unegyptian(egyptian(Fraction(3, 4))) == Fraction(3, 4))
+print(unegyptian(egyptian(Fraction(39, 20))) == Fraction(39, 20))
+print(unegyptian(egyptian(Fraction(127, 130))) == Fraction(127, 130))
+print(unegyptian(egyptian(Fraction(5, 7))) == Fraction(5, 7))
+print(unegyptian(egyptian(Fraction(1, 1))) == Fraction(1, 1))
+print(unegyptian(egyptian(Fraction(2, 1))) == Fraction(2, 1))
+print(unegyptian(egyptian(Fraction(3, 1))) == Fraction(3, 1))
