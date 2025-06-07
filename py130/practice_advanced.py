@@ -194,19 +194,37 @@ no instructions given for what to do if multiple sentences are equal length,
     
 #     return f"{longest}\n\nThe longest sentence has {count} words."
 
+"""
+A
+define a splitter helper function that calls split with sentence-ending punctuation
+    if that punctuator is present in the string
+        if the final char in the string matches the punctuator, append
+            the punctuator to all new substrings created by split
+        else append to all but the final one
+    do the same for each of the other sentence-enders
+    flatten and return resulting list of strings
+    closure or partial function might make this more efficient, i.e.
+        get_sentences = splitter(string)
+        for punctuator in ".!?"
+        list_of_sentences += get_sentences(punctuator)
 
+once all sentences are in the list, intact
+sentence_word_count = dict()
+each sentence will be a dict key with its word count for the value
+
+find the highest value and format a string as shown in examples, using that pair
+
+no instructions given for what to do if multiple sentences are equal length,
+    so I'll let Python decide what to do there and observe result
+"""
 import re
 
 def longest_sentence(text):
-    sentences = re.findall(r'[A-Z]+[^.!?]*[.!?]', text)
+    sentences = re.findall(r'[^ .!?]+[^.!?]*[.!?]', text)
 
-    longest = [
-        max(sentence.split(), key=len) for sentence in sentences
-        ]
-    
-    print(longest)
+    longest = max(sentences, key=lambda s: len(s.split()))
 
-    return f"{longest[0]}\nThe longest sentence has {len(longest[0].split())} words."
+    print(f"{longest}\n\nThe longest sentence has {len(longest.split())} words.\n")
 
 
 long_text = (
@@ -238,22 +256,22 @@ longer_text = long_text + (
     'shall not perish from the earth.'
 )
 
-print(longest_sentence(long_text))
+longest_sentence(long_text)
 # Four score and seven years ago our fathers brought forth on this continent a new nation, conceived in liberty, and dedicated to the proposition that all men are created equal.
 #
 # The longest sentence has 30 words.
 
-print(longest_sentence(longer_text))
+longest_sentence(longer_text)
 # It is rather for us to be here dedicated to the great task remaining before us -- that from these honored dead we take increased devotion to that cause for which they gave the last full measure of devotion -- that we here highly resolve that these dead shall not have died in vain -- that this nation, under God, shall have a new birth of freedom -- and that government of the people, by the people, for the people, shall not perish from the earth.
 #
 # The longest sentence has 86 words.
 
-print(longest_sentence("Where do you think you're going? What's up, Doc?"))
+longest_sentence("Where do you think you're going? What's up, Doc?")
 # Where do you think you're going?
 #
 # The longest sentence has 6 words.
 
-print(longest_sentence("To be or not to be! Is that the question?"))
+longest_sentence("To be or not to be! Is that the question?")
 # To be or not to be!
 #
 # The longest sentence has 6 words.

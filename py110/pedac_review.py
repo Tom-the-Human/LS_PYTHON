@@ -2523,14 +2523,117 @@ returns a list of the denominators that are part of an Egyptian Fraction
 representation of the number, and another that takes a list of numbers in the 
 same format, and calculates the resulting Rational number. You will need to 
 use the Fraction class provided by the fractions module.
+
+P
+egyptian()
+Input: rational number => Fraction object
+Output: list of denominators
+unegyptian()
+Input: list of numbers
+Output: Fraction object (rational number)
+Explicit:
+1 see notes regarding rational numbers, unit numbers, Egyptian Fractions
+2 return list of denominators that sum to input
+    i.e. 1/2 == [3, 6]
+3 there ARE infinite solutions to each input, so we just need A correct answer
+    rather than THE correct answer
+4 unegyptian() should just return the correct Fraction object
+    in this case, there is only 1 correct answer
+Implicit:
+1 floats will probably mess this up completely, so we'll need to get familiar
+    with the fractions module to avoid floating point math
+
+E
+(egyptian(Fraction(137, 60)))   # [1, 2, 3, 4, 5]
+Fraction(137, 60) == 137/60 == 2 and 17/60 == about 2.28 (and a third)
+1/1 + 1/2 + 1/3 + 1/6 == 2
+1/4 + 1/30 == 17/60
+So I would get the output list [1, 2, 3, 4, 6, 30]
+While this isn't the example answer, I believe it is correct, but let's think.
+Removing 1/6 and 1/30 from my list, can they be replaced by 1/5?
+1/5 == .2
+1/6 == .166666 
+1/30 == .033333
+    (had to think about 1/30 ... 1/20 == .05 and 1/30 is 50% less than that)
+So yes, 1/5 == 1/6 + 1/30, just as 1/2 == 1/3 + 1/6. Both lists are correct.
+
+Getting a clue! Subtracting the denominator from the numerator to start, gives
+1/1 or [1] and 77/60, then subtracting 1/2 the denom (30) gives 1/2 or [2] and
+47/60. Then subtracting 1/3 (20) gives [3] and 27/60. We could go on in this
+fashion until nothing remains. So then it's just a matter of subtracting each
+each fraction that doesn't exceed the remaining value of the numerator.
+137/60
+60 // 1 == 60
+137 - 60 == 77 (add 1 to list)
+60 // 2 == 30
+77 - 30 == 47 (add 2 to list)
+60 // 3 == 20
+47 - 20 == 27 (add 3 to list)
+60 // 4 == 15
+27 - 15 == 12 (add 4 to list)
+60 // 5 == 12
+12 - 12 == 0 (add 5 to list) COMPLETE
+Other fractions will require us to skip when the result of the division is
+greater than the remaining value.
+
+How to reverse this for `unegyptian()`? Seems fairly easy I think, but I 
+guess that depends on how Fraction objects can be used. For example,
+[1, 2, 3, 4, 5] => 1 + 1/2 + 1/3 + 1/4 + 1/5 == 2.28333 == Fraction(137/60)
+
+C
+I get the problem
+
+H
+init variables for the numerator and denominator
+starting with denominator / 1, check to see if a given dividend is <= numerator
+if so, subtract it from the numerator and add the divisor (1 in this example)
+    to the output list
+if not (it is greater) skip to the next divisor
+continue until the numerator is reduced to exactly 0
+return list
+
+D
+Fraction object or list of ints input
+opposite output
+
+A
+init variables for the numerator and denominator
+starting with denominator / 1, check to see if a given dividend is <= numerator
+if so, subtract it from the numerator and add the divisor (1 in this example)
+    to the output list
+if not (it is greater) skip to the next divisor
+continue until the numerator is reduced to exactly 0
+return list
+
+For unegyptian, we start by taking the list and then add unit Fraction objects 
+together, 1 for each denominator in the list
+
+C
 """
 from fractions import Fraction
 
-def egyptian():
-    pass
+def egyptian(fract):
+    remaining = Fraction(fract.numerator, fract.denominator)
+    divisors = []
+    divisor = 1
 
-def unegyption():
-    pass
+    while remaining > 0:
+        unit_fraction =  Fraction(1, divisor)
+
+        if unit_fraction <= remaining:
+            remaining -= unit_fraction
+            divisors.append(divisor)
+
+        divisor += 1
+
+    return divisors
+
+def unegyptian(denoms):
+    fract = Fraction(0, 1)
+    for denom in denoms:
+        fract += Fraction(1, denom)
+
+    return fract
 
 
 # Using the egyptian function
