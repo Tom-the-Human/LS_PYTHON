@@ -2610,46 +2610,158 @@ together, 1 for each denominator in the list
 
 C
 """
-from fractions import Fraction
+# from fractions import Fraction
 
-def egyptian(fract):
-    remaining = Fraction(fract.numerator, fract.denominator)
-    divisors = []
-    divisor = 1
+# def egyptian(fract):
+#     remaining = Fraction(fract.numerator, fract.denominator)
+#     divisors = []
+#     divisor = 1
 
-    while remaining > 0:
-        unit_fraction =  Fraction(1, divisor)
+#     while remaining > 0:
+#         unit_fraction =  Fraction(1, divisor)
 
-        if unit_fraction <= remaining:
-            remaining -= unit_fraction
-            divisors.append(divisor)
+#         if unit_fraction <= remaining:
+#             remaining -= unit_fraction
+#             divisors.append(divisor)
 
-        divisor += 1
+#         divisor += 1
 
-    return divisors
+#     return divisors
 
-def unegyptian(denoms):
-    fract = Fraction(0, 1)
-    for denom in denoms:
-        fract += Fraction(1, denom)
+# def unegyptian(denoms):
+#     fract = Fraction(0, 1)
+#     for denom in denoms:
+#         fract += Fraction(1, denom)
 
-    return fract
+#     return fract
 
 
-# Using the egyptian function
-# Your results may differ for these first 3 examples
-print(egyptian(Fraction(2, 1)))      # [1, 2, 3, 6]
-print(egyptian(Fraction(137, 60)))   # [1, 2, 3, 4, 5]
-print(egyptian(Fraction(3, 1)))
-# [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 230, 57960]
+# # Using the egyptian function
+# # Your results may differ for these first 3 examples
+# print(egyptian(Fraction(2, 1)))      # [1, 2, 3, 6]
+# print(egyptian(Fraction(137, 60)))   # [1, 2, 3, 4, 5]
+# print(egyptian(Fraction(3, 1)))
+# # [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 230, 57960]
 
-# Using the unegyptian function
-# All of these examples should print True
-print(unegyptian(egyptian(Fraction(1, 2))) == Fraction(1, 2))
-print(unegyptian(egyptian(Fraction(3, 4))) == Fraction(3, 4))
-print(unegyptian(egyptian(Fraction(39, 20))) == Fraction(39, 20))
-print(unegyptian(egyptian(Fraction(127, 130))) == Fraction(127, 130))
-print(unegyptian(egyptian(Fraction(5, 7))) == Fraction(5, 7))
-print(unegyptian(egyptian(Fraction(1, 1))) == Fraction(1, 1))
-print(unegyptian(egyptian(Fraction(2, 1))) == Fraction(2, 1))
-print(unegyptian(egyptian(Fraction(3, 1))) == Fraction(3, 1))
+# # Using the unegyptian function
+# # All of these examples should print True
+# print(unegyptian(egyptian(Fraction(1, 2))) == Fraction(1, 2))
+# print(unegyptian(egyptian(Fraction(3, 4))) == Fraction(3, 4))
+# print(unegyptian(egyptian(Fraction(39, 20))) == Fraction(39, 20))
+# print(unegyptian(egyptian(Fraction(127, 130))) == Fraction(127, 130))
+# print(unegyptian(egyptian(Fraction(5, 7))) == Fraction(5, 7))
+# print(unegyptian(egyptian(Fraction(1, 1))) == Fraction(1, 1))
+# print(unegyptian(egyptian(Fraction(2, 1))) == Fraction(2, 1))
+# print(unegyptian(egyptian(Fraction(3, 1))) == Fraction(3, 1))
+
+
+
+'''
+# Find the longest substring in alphabetical order.
+# Example: the longest alphabetical substring in "asdfaaaabbbbcttavvfffffdf" is "aaaabbbbctt".
+# The input will only consist of lowercase characters and will be at least one letter long.
+# If there are multiple solutions, return the one that appears first.
+
+P
+input: string
+output: longest substring in alphabetic order
+Explicit:
+1 no empty strings
+2 if multiple of same length, return first
+3 any substring where left_char <= right_char,
+    until  left_char > right_char
+Implicit:
+?
+
+E
+ord()
+case not a factor
+
+C
+check
+
+H
+any substring where left_char <= right_char,
+    until  left_char > right_char
+
+empty list for alphabetic substring
+determine whether each character in string is greater or less than (or equal) to previous character
+when <=, copy char to new string
+when >, add new string to a list
+return the longest substring form the list
+
+D
+string input and output
+list of substrings
+strings
+
+A
+
+empty list for alphabetic substring
+aplha = ''
+
+for loop:
+determine whether each character in string is greater or less than (or equal) to previous character
+    comparisson, possibly need ord(), try without ord()
+
+when <=, copy char to alpha
+
+when >, add alpha to a list
+    - reset alpha to ''
+
+return the longest substring from the list
+max(sub in sub_list, key=len)
+
+C
+'''
+
+# def longest(string):
+#     sub_list = []
+#     alpha = ''
+
+#     if len(string) == 1:
+#         return string
+
+#     for idx in range(1, len(string)):
+#         if string[idx - 1] <= string[idx]:
+#             alpha += string[idx - 1]
+#         else:
+#             alpha += string[idx - 1]
+#             sub_list.append(alpha)
+#             alpha = ''
+    
+#     alpha += string[idx]
+#     sub_list.append(alpha)
+
+#     return max(sub_list, key=len)
+
+
+
+# # Tests
+# print(longest('asd') == 'as')
+# print(longest('nab') == 'ab')
+# print(longest('abcdeapbcdef') ==  'abcde')
+# print(longest('asdfaaaabbbbcttavvfffffdf') == 'aaaabbbbctt')
+# print(longest('asdfbyfgiklag') == 'fgikl')
+# print(longest('z') == 'z')
+# print(longest('zyba') == 'z')
+
+'''
+'''
+# This function returns all contiguous sublists from the input list.
+def all_sublists(lst):
+    sublists = []
+    for i in range(len(lst)):
+        for j in range(i, len(lst) + 1):
+            sublists.append(lst[i:j])
+    
+    counter = 0
+    for sub in sublists:
+        if sum(sub) < 10 and len(sub) > 0:
+            counter += 1
+    
+    return counter
+
+# Example:
+my_list = [1, 4, 5, 2]
+print(all_sublists(my_list))
