@@ -135,11 +135,15 @@ just operating directly on the integers).
 # # switch(blade)
 # print(blade)
 
-my_set = {1, 2, 3, 4, 5, 6, 7, 8,}
-print(my_set)
-my_set.remove(1)
-print(my_set)
-other_set = {5, 6, 7, 8, 9, 0,}
-print(my_set | other_set)
-print(my_set.intersection(other_set))
-print(other_set.difference(my_set))
+# my_set = {1, 2, 3, 4, 5, 6, 7, 8,}
+# print(my_set)
+# my_set.remove(1)
+# print(my_set)
+# other_set = {5, 6, 7, 8, 9, 0,}
+# print(my_set | other_set)
+# print(my_set.intersection(other_set))
+# print(other_set.difference(my_set))
+
+nums = [1, 2, 3, 4, 5,]
+evn_nums = filter(lambda x: x % 2 == 0, nums)
+print(list(evn_nums))
