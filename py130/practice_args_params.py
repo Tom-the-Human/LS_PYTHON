@@ -53,3 +53,15 @@ def print_message(*, message, level='INFO'):
 print_message(level="Do not touch Willie", message="Good advice")
 
 
+def pack_tools(*tools):
+		print(tools)
+
+some_tools = ['saw', 'hammer', 'drill', 'shovel']
+a, b, c, d = some_tools # basic unpacking without *
+a, b, *c = some_tools # unpacking with *, so that c = ['drill', 'shovel']
+# * is used here to pack/collect remaining elements
+tools2 = ('shears', 'knife', 'trimmers')
+
+pack_tools(a, b, *c, *tools2) # also unpacking 
+# (need * to pass elements individually)
+# also shows that multiple starred parameters will work
