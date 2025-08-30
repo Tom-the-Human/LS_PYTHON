@@ -116,6 +116,7 @@ better, though it might be slightly less efficient (function call instead of
 just operating directly on the integers).
 '''
 # def switch(eroo):
+#   # WARNING! Mutates AND returns input!
 #     for idx in range(len(eroo) // 2):
 #         eroo[idx], eroo[-idx - 1] = eroo[-abs(idx + 1)], eroo[idx]
 
@@ -144,6 +145,3 @@ just operating directly on the integers).
 # print(my_set.intersection(other_set))
 # print(other_set.difference(my_set))
 
-nums = [1, 2, 3, 4, 5,]
-evn_nums = filter(lambda x: x % 2 == 0, nums)
-print(list(evn_nums))
