@@ -1,13 +1,9 @@
-<<<<<<< HEAD
 # NEVER USE CTRL+Z to end programs that bind ports! Only CTRL+C!
 
-=======
->>>>>>> refs/remotes/origin/main
 import socket
 import random
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-<<<<<<< HEAD
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 server_socket.bind(('localhost', 3003))
 server_socket.listen()
@@ -41,12 +37,10 @@ def parse_query(request_line):
 
     return int(rolls), int(sides)
 
-=======
 server_socket.bind(('localhost', 3002))
 server_socket.listen()
 
 print("Server is running on localhost:3002")
->>>>>>> refs/remotes/origin/main
 
 while True:
     client_socket, addr = server_socket.accept()
@@ -60,7 +54,6 @@ while True:
     request_line = request.splitlines()[0]
     print(request_line)
 
-<<<<<<< HEAD
     rolls, sides = parse_query(request_line)
 
     response_body = f"<html><head><title>{request_line}</title></head><body><ul>"
@@ -73,16 +66,6 @@ while True:
                 f"Content-Length: {len(response_body)}\r\n"
                 "\r\n"
                 f"{response_body}</ul></body></html>")
-=======
-    roll = random.randint(1, 6)
-    response_body = f"{request_line}\nRoll: {roll}\n"
-
-    response = ("HTTP/1.1 200 OK\r\n"
-                "Content-Type: text/plain\r\n"
-                f"Content-Length: {len(response_body)}\r\n"
-                "\r\n"
-                f"{response_body}\n")
->>>>>>> refs/remotes/origin/main
 
     client_socket.sendall(response.encode())
     client_socket.close()
