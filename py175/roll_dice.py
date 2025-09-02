@@ -37,10 +37,6 @@ def parse_query(request_line):
 
     return int(rolls), int(sides)
 
-server_socket.bind(('localhost', 3002))
-server_socket.listen()
-
-print("Server is running on localhost:3002")
 
 while True:
     client_socket, addr = server_socket.accept()
@@ -57,11 +53,11 @@ while True:
     rolls, sides = parse_query(request_line)
 
     response_body = f"<html><head><title>{request_line}</title></head><body><ul>"
-    for roll in range(0, rolls):
+    for _ in range(rolls):
         roll = random.randint(1, sides)
         response_body += f"<li>Roll: {roll}</li>"
 
-    response = ("<p>HTTP/1.1 200 OK\r\n"
+    response = ("HTTP/1.1 200 OK\r\n"
                 "Content-Type: text/html\r\n"
                 f"Content-Length: {len(response_body)}\r\n"
                 "\r\n"
