@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <div class="header">
+    <h2>Never heard of 'em!</h2>
+    <h3>🥸 404 - Page Not Found</h3>
+  </div>
+  <div class="content">
+    <h3>Please check that you spelled the name correctly and try again.</h3>
+    <p>The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
+    <p><a href="{{ url_for('index') }}" class="pure-menu-link" style="text-align: center;">Return to User List</a></p>
+  </div>
+{% endblock %}

@@ -10,22 +10,17 @@
 
   {% if query %}
     {% if results | length == 0 %}
-      <p>My sincerest apologies, old friend. It appears the case has gone cold, and our search has yielded no results.</p>
+      <p>No users matching that description.</p>
     {% else %}
       <h2 class="content-subhead">Results for '{{ query }}'</h2>
         <ul>
           {% for result in results %}
             <li>
-              <h4>{{ result.name }}</h4>
-              <ul>
-              {% for index, text in result.paragraphs.items() %}
-                <li>
-                  <a href="{{ url_for('chapter', page_num=result.number) }}#paragraph{{ index }}">
-                  {{ text | highlight(query) | safe }}
-                  </a>
-                </li>
-              {% endfor %}
-              </ul>
+              <h4>
+                <a href="{{ url_for('profile', query=query) }}">
+                {{ result.key()}}
+                </a>
+              </h4>
             </li>
           {% endfor %}
         </ul>

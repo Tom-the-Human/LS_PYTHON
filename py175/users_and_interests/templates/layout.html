@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Users and Interests</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/pure-min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/fonts.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/book_viewer.css') }}">
+  </head>
+
+  <body>
+ 
+
+      <div id="main">
+        <div class="header">
+          <h1>Users and Interests</h1>
+        </div>
+
+        <div class="content">
+          {% block content %}
+          {% endblock %}
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer"> 
+      <p>There are {{ num_users() }} users with a total of {{ num_interests() }} interests.</p>
+    </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='javascripts/ui.js') }}"></script>
+  </body>
+</html>

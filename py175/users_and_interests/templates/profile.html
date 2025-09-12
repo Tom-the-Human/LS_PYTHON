@@ -1,0 +1,20 @@
+<!-- display user profile from query -->
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="user_info">
+  <h2>User Info</h2>
+    {{ user_info }}
+</div>
+
+
+<div class="other_users">
+  <h3>Links to other users:</h3>
+    <ul>
+      {% for name in other_users %}
+        <li><a href="{{ url_for('profile', user_name=name) }}"> {{ name }} </a></li>
+      {% endfor %}
+    </ul>
+</div>
+{% endblock content %}
+
