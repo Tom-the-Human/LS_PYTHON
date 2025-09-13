@@ -13,3 +13,10 @@ nora:
 hiroko:
   email: hiroko.ohara@hotmail.com
   interests: []
+tom:
+  email: tom.hodges.83@gmail.com
+  interests:
+    - art
+    - music
+    - gardening
+    - software engineering

@@ -2,9 +2,9 @@
 
 {% block content %}
 <h1>Users:</h1>
-  <ul>
-    {% for name in content %}
-      <li><a href="{{ url_for('profile', user_name=name) }}"> {{ name }} </a></li>
-  </ul>  
-    {% endfor %}
+<ul>
+  {% for name in content %}
+    <li><a href="{{ url_for('profile', user_name=name) }}">{{ name }}</a></li>
+  {% endfor %}
+</ul>  
 {% endblock content %}

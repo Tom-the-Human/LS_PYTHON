@@ -22,18 +22,16 @@ import yaml
 
 app = Flask(__name__)
 
-@app.before_request
-def load_contents():
-    with open('users.yaml', 'r') as file:
-        g.user_data = yaml.safe_load(file)
-        g.names = [name for name in g.user_data.keys()]
+with open('users.yaml', 'r') as file:
+    user_data = yaml.safe_load(file)
+    names = [name for name in user_data.keys()]
 
 def num_users():
-    return len(g.names)
+    return len(names)
 
 def num_interests():
     interests = 0
-    for user in g.user_data.values():
+    for user in user_data.values():
         interests += len(user['interests'])
     return interests
 
@@ -48,32 +46,30 @@ def index():
     
 @app.route('/users')
 def users():
-    return render_template('users.html', content=g.names)
+    return render_template('users.html', content=names)
 
 @app.route('/profile/name=<user_name>')
 def profile(user_name):
-    if user_name not in g.names:
+    if user_name not in names:
         return render_template('404.html')
-    # profile.html template to take user_data matching query
-    # just need to pass the parts to the profile
-    #   name, email, interests
-    # include list of users that the profile is not being rendered for
-    other_users = [name for name in g.names if name != user_name]
-    user_info = g.user_data.get(user_name)
-#    return print_test(user_info)
-    return render_template('profile.html', user_info=user_info, other_users=other_users)
 
-    
-# @app.route('/search')
-# def search():
-#     # currently not working (not needed for the assignment)
-#     query = request.args.get('query', 'No query')
-#     return render_template('search.html', query=query)
+    other_users = [name for name in names if name != user_name]
+    user_info = user_data.get(user_name)
 
+    return render_template('profile.html', 
+                           user_info=user_info, 
+                           other_users=other_users)
+
+@app.errorhandler(404)
+def page_not_found(_error):
+    return render_template('404.html'), 404
 
 @app.route('/print_test')
-def print_test(print_out):
-    return print_out
+def print_test(var_you_want_printed):
+    # to directly see what a given variable holds, for troubleshooting
+    # return print_test(arg) in the applicable function
+    # then navigate to this route
+    return var_you_want_printed
 
 
 if __name__ == '__main__':
